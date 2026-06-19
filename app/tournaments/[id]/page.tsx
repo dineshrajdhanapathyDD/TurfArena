@@ -200,12 +200,14 @@ export default function TournamentDetailPage({
 
       {/* Fixed Join CTA */}
       <div className="fixed inset-x-0 bottom-0 z-50 mx-auto max-w-md px-5 pb-5">
-        <motion.button
-          whileTap={{ scale: 0.97 }}
-          className="shadow-glow-primary glass-strong flex w-full items-center justify-center gap-2 rounded-[18px] bg-primary py-4 font-semibold text-primary-foreground"
-        >
-          Join Tournament · {formatCurrency(t.entryFee)}
-        </motion.button>
+        <Link href={`/tournaments/${id}/register`}>
+          <motion.button
+            whileTap={{ scale: 0.97 }}
+            className="shadow-glow-primary glass-strong flex w-full items-center justify-center gap-2 rounded-[18px] bg-primary py-4 font-semibold text-primary-foreground"
+          >
+            Join Tournament · {formatCurrency(t.entryFee)}
+          </motion.button>
+        </Link>
       </div>
     </AppShell>
   )

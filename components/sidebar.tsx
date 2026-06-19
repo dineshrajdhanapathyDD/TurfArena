@@ -15,6 +15,14 @@ const menuItems = {
     { icon: Trophy, label: 'Tournaments', href: '/tournaments' },
     { icon: Settings, label: 'Settings', href: '/settings' },
   ],
+  captain: [
+    { icon: Home, label: 'Home', href: '/customer-dashboard' },
+    { icon: Trophy, label: 'My Team', href: '/team' },
+    { icon: BarChart3, label: 'Statistics', href: '/stats' },
+    { icon: Clock, label: 'Tournaments', href: '/tournaments' },
+    { icon: Heart, label: 'My Bookings', href: '/my-bookings' },
+    { icon: Settings, label: 'Settings', href: '/settings' },
+  ],
   organizer: [
     { icon: Home, label: 'Dashboard', href: '/organizer' },
     { icon: Trophy, label: 'My Tournaments', href: '/organizer/tournaments' },

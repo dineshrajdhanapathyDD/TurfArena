@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react'
 
-export type UserRole = 'customer' | 'organizer' | 'owner'
+export type UserRole = 'customer' | 'captain' | 'organizer' | 'owner'
 
 export type User = {
   id: string
@@ -34,6 +34,18 @@ const TEST_USERS: Record<string, { password: string; user: User }> = {
       avatar: '/images/player-1.png',
       credits: 5000,
       joinedAt: '2024-01-15',
+    },
+  },
+  'captain@turf.com': {
+    password: 'captain123',
+    user: {
+      id: 'u4',
+      email: 'captain@turf.com',
+      name: 'Arjun Mehta',
+      role: 'captain',
+      avatar: '/images/player-1.png',
+      credits: 8000,
+      joinedAt: '2023-09-01',
     },
   },
   'organizer@turf.com': {

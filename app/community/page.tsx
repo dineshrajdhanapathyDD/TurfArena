@@ -1,191 +1,270 @@
 'use client'
 
+import { useState } from 'react'
 import Image from 'next/image'
-import Link from 'next/link'
-import { motion } from 'framer-motion'
-import { ChevronDown, Mail, Phone, MapPin } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Heart, MessageCircle, Share2, Send, ImageIcon, Trophy, Flame, Award, Radio, X } from 'lucide-react'
+import { AppShell, PageHeader } from '@/components/app-shell'
+import { BottomNav } from '@/components/bottom-nav'
+import { feedPosts, type FeedPost } from '@/lib/data'
+
+const typeColors: Record<FeedPost['type'], { bg: string; text: string; icon: typeof Trophy }> = {
+  'Match Result': { bg: 'bg-success/15', text: 'text-success', icon: Radio },
+  'Tournament Update': { bg: 'bg-primary/15', text: 'text-primary', icon: Trophy },
+  'Achievement': { bg: 'bg-warning/15', text: 'text-warning', icon: Award },
+  'Highlight Reel': { bg: 'bg-accent/15', text: 'text-accent', icon: Flame },
+}
+
+const postTypes: FeedPost['type'][] = ['Match Result', 'Achievement', 'Tournament Update', 'Highlight Reel']
 
 export default function CommunityPage() {
+  const [posts, setPosts] = useState(feedPosts)
+  const [newPost, setNewPost] = useState('')
+  const [newPostType, setNewPostType] = useState<FeedPost['type']>('Match Result')
+  const [likedPosts, setLikedPosts] = useState<Set<string>>(new Set())
+  const [commentingOn, setCommentingOn] = useState<string | null>(null)
+  const [commentText, setCommentText] = useState('')
+  const [comments, setComments] = useState<Record<string, { author: string; text: string }[]>>({})
+
+  function handleLike(postId: string) {
+    setLikedPosts((prev) => {
+      const next = new Set(prev)
+      if (next.has(postId)) {
+        next.delete(postId)
+      } else {
+        next.add(postId)
+      }
+      return next
+    })
+    setPosts((prev) =>
+      prev.map((p) =>
+        p.id === postId
+          ? { ...p, likes: likedPosts.has(postId) ? p.likes - 1 : p.likes + 1 }
+          : p
+      )
+    )
+  }
+
+  function handlePost() {
+    if (!newPost.trim()) return
+    const post: FeedPost = {
+      id: `f${Date.now()}`,
+      author: 'You',
+      avatar: '/images/player-1.png',
+      time: 'Just now',
+      type: newPostType,
+      content: newPost.trim(),
+      likes: 0,
+      comments: 0,
+    }
+    setPosts((prev) => [post, ...prev])
+    setNewPost('')
+  }
+
+  function handleComment(postId: string) {
+    if (!commentText.trim()) return
+    setComments((prev) => ({
+      ...prev,
+      [postId]: [...(prev[postId] || []), { author: 'You', text: commentText.trim() }],
+    }))
+    setPosts((prev) =>
+      prev.map((p) => (p.id === postId ? { ...p, comments: p.comments + 1 } : p))
+    )
+    setCommentText('')
+  }
+
   return (
-    <div className="min-h-screen bg-white">
-      {/* ===== HEADER SECTION ===== */}
-      {/* NAVIGATION HEADER */}
-      <header className="sticky top-0 z-50 bg-gray-900 text-white shadow-lg">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            {/* LOGO */}
-            <Link href="/home" className="text-xl font-bold">
-              TurfArena
-            </Link>
-            
-            {/* NAVIGATION MENU */}
-            <nav className="hidden md:flex items-center gap-8">
-              <Link href="/home" className="text-sm font-medium hover:text-gray-300 transition">
-                Home
-              </Link>
-              <Link href="/turfs" className="text-sm font-medium hover:text-gray-300 transition">
-                Book
-              </Link>
-              <Link href="/tournaments" className="text-sm font-medium hover:text-gray-300 transition">
-                Tournaments
-              </Link>
-              <Link href="/community" className="text-sm font-medium hover:text-gray-300 transition text-orange-400">
-                Contact
-              </Link>
-            </nav>
-            
-            {/* USER PROFILE */}
-            <div className="flex items-center gap-4">
-              <Image
-                src="/images/player-1.png"
-                alt="Profile"
-                width={32}
-                height={32}
-                className="size-8 rounded-full object-cover"
+    <AppShell>
+      <PageHeader title="Community" subtitle="What's happening in your sports circle" />
+
+      {/* Create Post */}
+      <section className="px-5 pt-2">
+        <div className="glass rounded-[20px] p-4">
+          <div className="flex gap-3">
+            <Image
+              src="/images/player-1.png"
+              alt="You"
+              width={40}
+              height={40}
+              className="size-10 rounded-full object-cover shrink-0"
+            />
+            <div className="flex-1">
+              <textarea
+                value={newPost}
+                onChange={(e) => setNewPost(e.target.value)}
+                placeholder="Share a match update, achievement, or highlight..."
+                rows={2}
+                className="w-full resize-none bg-transparent text-sm outline-none placeholder:text-muted-foreground"
               />
-              <button className="flex items-center gap-1 text-sm font-medium hover:text-gray-300 transition">
-                Tani <ChevronDown className="size-4" />
-              </button>
+              {/* Post type chips */}
+              <div className="flex flex-wrap gap-1.5 mt-2">
+                {postTypes.map((type) => {
+                  const info = typeColors[type]
+                  return (
+                    <button
+                      key={type}
+                      onClick={() => setNewPostType(type)}
+                      className={`rounded-full px-2.5 py-1 text-[10px] font-medium transition-colors ${
+                        newPostType === type
+                          ? `${info.bg} ${info.text}`
+                          : 'bg-surface-2 text-muted-foreground'
+                      }`}
+                    >
+                      {type}
+                    </button>
+                  )
+                })}
+              </div>
+              <div className="mt-2 flex items-center justify-between border-t border-border pt-2">
+                <button className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors">
+                  <ImageIcon className="size-4" />
+                  Photo
+                </button>
+                <motion.button
+                  whileTap={{ scale: 0.93 }}
+                  onClick={handlePost}
+                  disabled={!newPost.trim()}
+                  className="flex items-center gap-1.5 rounded-full bg-primary px-4 py-1.5 text-xs font-semibold text-primary-foreground disabled:opacity-40"
+                >
+                  <Send className="size-3.5" />
+                  Post
+                </motion.button>
+              </div>
             </div>
           </div>
         </div>
-      </header>
-
-      {/* ===== CONTACT HEADER SECTION ===== */}
-      {/* PAGE HEADER */}
-      <section className="bg-gradient-to-r from-blue-600 to-blue-700 text-white py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">📞 Contact Us</h1>
-          <p className="text-lg text-blue-100">Get in touch with the TurfArena team</p>
-        </div>
       </section>
 
-      {/* ===== CONTACT CONTENT SECTION ===== */}
-      {/* CONTACT INFORMATION */}
-      <section className="py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-            {/* CONTACT METHOD 1: PHONE */}
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              className="text-center"
-            >
-              <div className="flex justify-center mb-4">
-                <div className="bg-blue-100 p-4 rounded-full">
-                  <Phone className="size-8 text-blue-600" />
-                </div>
-              </div>
-              <h3 className="text-xl font-bold mb-2">Call Us</h3>
-              <p className="text-gray-600 mb-2">+91 98765 43210</p>
-              <p className="text-gray-600">Monday - Friday: 9AM - 6PM</p>
-            </motion.div>
+      {/* Feed */}
+      <section className="px-5 pt-4 space-y-4 pb-4">
+        <AnimatePresence mode="popLayout">
+          {posts.map((post, i) => {
+            const typeInfo = typeColors[post.type]
+            const Icon = typeInfo.icon
+            const isLiked = likedPosts.has(post.id)
 
-            {/* CONTACT METHOD 2: EMAIL */}
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="text-center"
-            >
-              <div className="flex justify-center mb-4">
-                <div className="bg-green-100 p-4 rounded-full">
-                  <Mail className="size-8 text-green-600" />
-                </div>
-              </div>
-              <h3 className="text-xl font-bold mb-2">Email Us</h3>
-              <p className="text-gray-600 mb-2">contact@turfarena.com</p>
-              <p className="text-gray-600">We'll respond within 24 hours</p>
-            </motion.div>
-
-            {/* CONTACT METHOD 3: LOCATION */}
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="text-center"
-            >
-              <div className="flex justify-center mb-4">
-                <div className="bg-orange-100 p-4 rounded-full">
-                  <MapPin className="size-8 text-orange-600" />
-                </div>
-              </div>
-              <h3 className="text-xl font-bold mb-2">Visit Us</h3>
-              <p className="text-gray-600 mb-2">Bengaluru, India</p>
-              <p className="text-gray-600">Multiple locations across the city</p>
-            </motion.div>
-          </div>
-
-          {/* ===== CONTACT FORM SECTION ===== */}
-          {/* CONTACT FORM */}
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="max-w-2xl mx-auto bg-gray-50 rounded-lg p-8"
-          >
-            <h2 className="text-2xl font-bold mb-6 text-center">Send us a Message</h2>
-            
-            <form className="space-y-4">
-              {/* NAME FIELD */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
-                <input
-                  type="text"
-                  placeholder="Your name"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-                />
-              </div>
-
-              {/* EMAIL FIELD */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                <input
-                  type="email"
-                  placeholder="your.email@example.com"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-                />
-              </div>
-
-              {/* SUBJECT FIELD */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Subject</label>
-                <input
-                  type="text"
-                  placeholder="How can we help?"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-                />
-              </div>
-
-              {/* MESSAGE FIELD */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Message</label>
-                <textarea
-                  placeholder="Your message..."
-                  rows={5}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-                />
-              </div>
-
-              {/* SUBMIT BUTTON */}
-              <button
-                type="submit"
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition"
+            return (
+              <motion.article
+                key={post.id}
+                layout
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ delay: i * 0.05 }}
+                className="glass rounded-[20px] overflow-hidden"
               >
-                Send Message
-              </button>
-            </form>
-          </motion.div>
-        </div>
+                {/* Post header */}
+                <div className="flex items-center gap-3 p-4 pb-0">
+                  <Image
+                    src={post.avatar}
+                    alt={post.author}
+                    width={40}
+                    height={40}
+                    className="size-10 rounded-full object-cover"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold truncate">{post.author}</p>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[11px] text-muted-foreground">{post.time}</span>
+                      <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium ${typeInfo.bg} ${typeInfo.text}`}>
+                        <Icon className="size-2.5" />
+                        {post.type}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Post content */}
+                <div className="px-4 pt-3">
+                  <p className="text-sm leading-relaxed text-foreground/90">{post.content}</p>
+                </div>
+
+                {/* Post image */}
+                {post.image && (
+                  <div className="relative mt-3 h-44 w-full">
+                    <Image
+                      src={post.image}
+                      alt="Post media"
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                )}
+
+                {/* Actions */}
+                <div className="flex items-center gap-6 px-4 py-3">
+                  <motion.button
+                    whileTap={{ scale: 0.85 }}
+                    onClick={() => handleLike(post.id)}
+                    className={`flex items-center gap-1.5 text-xs font-medium transition-colors ${
+                      isLiked ? 'text-danger' : 'text-muted-foreground hover:text-danger'
+                    }`}
+                  >
+                    <Heart className={`size-4 ${isLiked ? 'fill-danger' : ''}`} />
+                    {post.likes}
+                  </motion.button>
+                  <button
+                    onClick={() => setCommentingOn(commentingOn === post.id ? null : post.id)}
+                    className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    <MessageCircle className="size-4" />
+                    {post.comments}
+                  </button>
+                  <button className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors">
+                    <Share2 className="size-4" />
+                    Share
+                  </button>
+                </div>
+
+                {/* Comments section */}
+                <AnimatePresence>
+                  {commentingOn === post.id && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      className="overflow-hidden border-t border-border"
+                    >
+                      <div className="px-4 py-3 space-y-2">
+                        {(comments[post.id] || []).map((c, ci) => (
+                          <div key={ci} className="flex gap-2">
+                            <span className="size-6 rounded-full bg-surface-2 flex items-center justify-center text-[10px] font-bold shrink-0">
+                              {c.author[0]}
+                            </span>
+                            <div>
+                              <span className="text-xs font-semibold">{c.author}</span>
+                              <p className="text-xs text-muted-foreground">{c.text}</p>
+                            </div>
+                          </div>
+                        ))}
+                        <div className="flex gap-2 pt-1">
+                          <input
+                            value={commentText}
+                            onChange={(e) => setCommentText(e.target.value)}
+                            onKeyDown={(e) => { if (e.key === 'Enter') handleComment(post.id) }}
+                            placeholder="Write a comment..."
+                            className="flex-1 h-9 rounded-full bg-surface-2 px-3 text-xs outline-none placeholder:text-muted-foreground focus:ring-2 focus:ring-primary/30"
+                          />
+                          <motion.button
+                            whileTap={{ scale: 0.9 }}
+                            onClick={() => handleComment(post.id)}
+                            disabled={!commentText.trim()}
+                            className="flex size-9 items-center justify-center rounded-full bg-primary text-primary-foreground disabled:opacity-40"
+                          >
+                            <Send className="size-3.5" />
+                          </motion.button>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.article>
+            )
+          })}
+        </AnimatePresence>
       </section>
 
-      {/* ===== FOOTER SECTION ===== */}
-      {/* FOOTER */}
-      <footer className="bg-gray-900 text-white py-12 mt-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <p className="text-gray-400">&copy; 2024 TurfArena. All rights reserved.</p>
-        </div>
-      </footer>
-    </div>
+      <BottomNav />
+    </AppShell>
   )
 }

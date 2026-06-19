@@ -13,6 +13,7 @@ export default function HomePage() {
       // Redirect to role-specific dashboard
       switch (user.role) {
         case 'customer':
+        case 'captain':
           router.push('/customer-dashboard')
           break
         case 'organizer':

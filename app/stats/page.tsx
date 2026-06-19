@@ -48,7 +48,7 @@ export default function StatsPage() {
   const maxMatches = Math.max(...monthlyData.map(d => d.matches))
 
   return (
-    <ProtectedRoute allowedRoles={['customer']}>
+    <ProtectedRoute allowedRoles={['customer', 'captain']}>
       <div className="min-h-screen w-full bg-[#f0f4ff]">
         {/* Header */}
         <div className="bg-white border-b border-gray-200 sticky top-0 z-30">

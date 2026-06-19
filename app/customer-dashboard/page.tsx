@@ -49,7 +49,7 @@ export default function CustomerDashboard() {
   const firstName = user?.name?.split(' ')[0] || 'Player'
 
   return (
-    <ProtectedRoute allowedRoles={['customer']}>
+    <ProtectedRoute allowedRoles={['customer', 'captain']}>
       <div className="min-h-screen w-full bg-[#f0f4ff]">
 
         {/* ═══════════════════════════════════════════
