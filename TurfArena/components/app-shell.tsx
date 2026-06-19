@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { cn } from '@/TurfArena/lib/utils'
+import { cn } from '@/lib/utils'
 
 export function AppShell({
   children,

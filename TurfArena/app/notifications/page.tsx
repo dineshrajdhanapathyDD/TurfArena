@@ -5,7 +5,7 @@ import { motion } from 'framer-motion'
 import { Radio, Trophy, CalendarCheck, Users, Bell } from 'lucide-react'
 import { AppShell } from '@/components/app-shell'
 import { BackHeader } from '@/components/back-header'
-import { notifications, type NotificationItem } from '@/TurfArena/lib/data'
+import { notifications, type NotificationItem } from '@/lib/data'
 
 const cats = ['All', 'Matches', 'Tournaments', 'Bookings', 'Community'] as const
 

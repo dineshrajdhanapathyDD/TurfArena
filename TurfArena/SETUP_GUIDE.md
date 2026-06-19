@@ -138,7 +138,7 @@ Create a `.env.local` file with the following variables:
 
 ```env
 # AWS Configuration
-AWS_REGION=ap-south-1
+AWS_REGION=us-east-1
 AWS_ACCESS_KEY_ID=your_access_key
 AWS_SECRET_ACCESS_KEY=your_secret_key
 
@@ -178,7 +178,7 @@ aws dynamodb create-table \
   --attribute-definitions AttributeName=playerId,AttributeType=S \
   --key-schema AttributeName=playerId,KeyType=HASH \
   --billing-mode PAY_PER_REQUEST \
-  --region ap-south-1
+  --region us-east-1
 
 # Teams Table
 aws dynamodb create-table \
@@ -186,7 +186,7 @@ aws dynamodb create-table \
   --attribute-definitions AttributeName=teamId,AttributeType=S \
   --key-schema AttributeName=teamId,KeyType=HASH \
   --billing-mode PAY_PER_REQUEST \
-  --region ap-south-1
+  --region us-east-1
 
 # Tournaments Table
 aws dynamodb create-table \
@@ -194,7 +194,7 @@ aws dynamodb create-table \
   --attribute-definitions AttributeName=tournamentId,AttributeType=S \
   --key-schema AttributeName=tournamentId,KeyType=HASH \
   --billing-mode PAY_PER_REQUEST \
-  --region ap-south-1
+  --region us-east-1
 
 # Matches Table
 aws dynamodb create-table \
@@ -202,7 +202,7 @@ aws dynamodb create-table \
   --attribute-definitions AttributeName=matchId,AttributeType=S \
   --key-schema AttributeName=matchId,KeyType=HASH \
   --billing-mode PAY_PER_REQUEST \
-  --region ap-south-1
+  --region us-east-1
 
 # Player Stats Table
 aws dynamodb create-table \
@@ -210,7 +210,7 @@ aws dynamodb create-table \
   --attribute-definitions AttributeName=playerId,AttributeType=S \
   --key-schema AttributeName=playerId,KeyType=HASH \
   --billing-mode PAY_PER_REQUEST \
-  --region ap-south-1
+  --region us-east-1
 
 # Turfs Table
 aws dynamodb create-table \
@@ -218,7 +218,7 @@ aws dynamodb create-table \
   --attribute-definitions AttributeName=turfId,AttributeType=S \
   --key-schema AttributeName=turfId,KeyType=HASH \
   --billing-mode PAY_PER_REQUEST \
-  --region ap-south-1
+  --region us-east-1
 ```
 
 ### 2. Create EventBridge Event Bus
@@ -226,7 +226,7 @@ aws dynamodb create-table \
 ```bash
 aws events create-event-bus \
   --name TurfArena-Events \
-  --region ap-south-1
+  --region us-east-1
 ```
 
 ### 3. IAM Permissions

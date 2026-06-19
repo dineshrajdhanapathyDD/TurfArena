@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion'
 import { BarChart3, Bell, Plus, Search, Settings, TrendingUp, Calendar, Filter, MoreHorizontal, DollarSign, Users, ShoppingCart, Target } from 'lucide-react'
 import { ProtectedRoute } from '@/components/protected-route'
-import { useAuth } from '@/TurfArena/lib/auth-context'
+import { useAuth } from '@/lib/auth-context'
 import Link from 'next/link'
 import { useState } from 'react'
 

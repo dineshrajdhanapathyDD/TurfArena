@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { ChevronDown, Search } from 'lucide-react'
-import { turfs } from '@/TurfArena/lib/data'
+import { turfs } from '@/lib/data'
 
 export default function TurfsPage() {
   const [query, setQuery] = useState('')

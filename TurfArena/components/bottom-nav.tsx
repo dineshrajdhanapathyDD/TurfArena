@@ -11,7 +11,7 @@ import {
   User,
   type LucideIcon,
 } from 'lucide-react'
-import { cn } from '@/TurfArena/lib/utils'
+import { cn } from '@/lib/utils'
 
 const items: { href: string; label: string; icon: LucideIcon }[] = [
   { href: '/home', label: 'Home', icon: Home },

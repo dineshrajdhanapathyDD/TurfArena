@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 import { Trophy, Users, TrendingUp, DollarSign, Plus, Calendar, MoreHorizontal } from 'lucide-react'
 import { ProtectedRoute } from '@/components/protected-route'
 import { OrganizerLayout } from '@/components/organizer-layout'
-import { useAuth } from '@/TurfArena/lib/auth-context'
+import { useAuth } from '@/lib/auth-context'
 import Link from 'next/link'
 import { useState } from 'react'
 

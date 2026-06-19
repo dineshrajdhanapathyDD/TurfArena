@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 import { Calendar, Clock, User, DollarSign, CheckCircle, AlertCircle, Phone, MoreHorizontal } from 'lucide-react'
 import { ProtectedRoute } from '@/components/protected-route'
 import { OwnerLayout } from '@/components/owner-layout'
-import { useAuth } from '@/TurfArena/lib/auth-context'
+import { useAuth } from '@/lib/auth-context'
 import { useState } from 'react'
 
 interface Booking {

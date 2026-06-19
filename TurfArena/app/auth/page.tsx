@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Eye, EyeOff, AlertCircle } from 'lucide-react'
 import { AppShell } from '@/components/app-shell'
-import { useAuth } from '@/TurfArena/lib/auth-context'
+import { useAuth } from '@/lib/auth-context'
 
 export default function AuthPage() {
   const router = useRouter()

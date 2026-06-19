@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Users, CheckCircle2, ChevronRight, AlertCircle, Trophy, UserPlus, X } from 'lucide-react'
 import { AppShell } from '@/components/app-shell'
 import { BackHeader } from '@/components/back-header'
-import { tournaments, teamRoster, formatCurrency } from '@/TurfArena/lib/data'
+import { tournaments, teamRoster, formatCurrency } from '@/lib/data'
 
 type Step = 'team' | 'players' | 'review' | 'success'
 

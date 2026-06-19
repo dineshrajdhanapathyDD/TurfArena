@@ -4,7 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { ChevronDown } from 'lucide-react'
-import { tournaments } from '@/TurfArena/lib/data'
+import { tournaments } from '@/lib/data'
 
 export default function TournamentsPage() {
   return (

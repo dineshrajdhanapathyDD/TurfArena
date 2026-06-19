@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 import { Bell, Lock, Users, Save } from 'lucide-react'
 import { ProtectedRoute } from '@/components/protected-route'
 import { OrganizerLayout } from '@/components/organizer-layout'
-import { useAuth } from '@/TurfArena/lib/auth-context'
+import { useAuth } from '@/lib/auth-context'
 import { useState } from 'react'
 
 interface SettingsState {

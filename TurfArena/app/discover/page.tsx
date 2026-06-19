@@ -7,7 +7,7 @@ import { AppShell, PageHeader } from '@/components/app-shell'
 import { BottomNav } from '@/components/bottom-nav'
 import { TournamentCard } from '@/components/cards/tournament-card'
 import { SportIcon } from '@/components/sport-icon'
-import { tournaments, SPORTS, type SportKey } from '@/TurfArena/lib/data'
+import { tournaments, SPORTS, type SportKey } from '@/lib/data'
 
 export default function DiscoverPage() {
   const [query, setQuery] = useState('')

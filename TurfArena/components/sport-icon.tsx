@@ -6,7 +6,7 @@ import {
   CircleDot,
   Trophy,
 } from 'lucide-react'
-import type { SportKey } from '@/TurfArena/lib/data'
+import type { SportKey } from '@/lib/data'
 
 const map: Record<SportKey, LucideIcon> = {
   football: CircleDot,

@@ -5,7 +5,7 @@ import { motion } from 'framer-motion'
 import { Crown, UserPlus, Settings2, Trophy, Target, Users } from 'lucide-react'
 import { AppShell } from '@/components/app-shell'
 import { BottomNav } from '@/components/bottom-nav'
-import { teamRoster } from '@/TurfArena/lib/data'
+import { teamRoster } from '@/lib/data'
 
 // 4-2-1 style positions on the pitch (percentages)
 const formation = [

@@ -4,7 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { Flame, Star, Users, MapPin, Trophy } from 'lucide-react'
-import { type Tournament, formatCurrency } from '@/TurfArena/lib/data'
+import { type Tournament, formatCurrency } from '@/lib/data'
 import { SportIcon } from '@/components/sport-icon'
 
 export function TournamentCard({ t }: { t: Tournament }) {

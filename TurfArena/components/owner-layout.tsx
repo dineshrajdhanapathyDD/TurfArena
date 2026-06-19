@@ -5,7 +5,7 @@ import { motion } from 'framer-motion'
 import { BarChart3, Bell, Plus, Search, Settings, TrendingUp, Calendar, Filter, MoreHorizontal, DollarSign, Users, ShoppingCart, Target, BookOpen, AreaChart, LogOut, Home } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useAuth } from '@/TurfArena/lib/auth-context'
+import { useAuth } from '@/lib/auth-context'
 
 interface SidebarItem {
   label: string

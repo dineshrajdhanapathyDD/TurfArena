@@ -1,47 +1,52 @@
 import { NextResponse } from 'next/server'
-import { tournaments } from '@/TurfArena/lib/data'
+import { TABLES, getItem, updateItem, AWS_ENABLED } from '@/lib/aws'
+import type { TournamentRecord } from '@/lib/aws'
+import { tournaments as mockTournaments } from '@/lib/data'
 
-// GET /api/tournaments/:id - Get a single tournament
+// GET /api/tournaments/:id
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params
-  const tournament = tournaments.find((t) => t.id === id)
-
-  if (!tournament) {
-    return NextResponse.json(
-      { success: false, error: 'Tournament not found' },
-      { status: 404 }
-    )
+  if (AWS_ENABLED) {
+    try {
+      const item = await getItem<TournamentRecord>(TABLES.TOURNAMENTS, { tournamentId: id })
+      if (!item) return NextResponse.json({ success: false, error: 'Not found' }, { status: 404 })
+      return NextResponse.json({ success: true, data: item })
+    } catch (error) {
+      console.error('[DynamoDB] GET /api/tournaments/:id:', error)
+      return NextResponse.json({ success: false, error: 'Database error' }, { status: 500 })
+    }
   }
-
-  return NextResponse.json({ success: true, data: tournament })
+  const t = mockTournaments.find((x) => x.id === id)
+  if (!t) return NextResponse.json({ success: false, error: 'Not found' }, { status: 404 })
+  return NextResponse.json({ success: true, data: t })
 }
 
-// PATCH /api/tournaments/:id - Update a tournament
+// PATCH /api/tournaments/:id
 export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params
-  const tournament = tournaments.find((t) => t.id === id)
-
-  if (!tournament) {
-    return NextResponse.json(
-      { success: false, error: 'Tournament not found' },
-      { status: 404 }
-    )
-  }
-
   try {
     const updates = await request.json()
-    const updated = { ...tournament, ...updates }
-    return NextResponse.json({ success: true, data: updated })
+    if (AWS_ENABLED) {
+      const parts: string[] = ['#updatedAt = :updatedAt']
+      const vals: Record<string, unknown> = { ':updatedAt': new Date().toISOString() }
+      const names: Record<string, string> = { '#updatedAt': 'updatedAt' }
+      Object.entries(updates).forEach(([k, v]) => {
+        if (k === 'tournamentId') return
+        parts.push(`#${k} = :${k}`); vals[`:${k}`] = v; names[`#${k}`] = k
+      })
+      const result = await updateItem(TABLES.TOURNAMENTS, { tournamentId: id }, `SET ${parts.join(', ')}`, vals, names)
+      return NextResponse.json({ success: true, data: result })
+    }
+    const t = mockTournaments.find((x) => x.id === id)
+    if (!t) return NextResponse.json({ success: false, error: 'Not found' }, { status: 404 })
+    return NextResponse.json({ success: true, data: { ...t, ...updates } })
   } catch {
-    return NextResponse.json(
-      { success: false, error: 'Invalid request body' },
-      { status: 400 }
-    )
+    return NextResponse.json({ success: false, error: 'Invalid body' }, { status: 400 })
   }
 }

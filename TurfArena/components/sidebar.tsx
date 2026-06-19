@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X, LogOut, Home, BarChart3, Trophy, Settings, Heart, Clock } from 'lucide-react'
-import { useAuth } from '@/TurfArena/lib/auth-context'
+import { useAuth } from '@/lib/auth-context'
 import Link from 'next/link'
 import Image from 'next/image'
 

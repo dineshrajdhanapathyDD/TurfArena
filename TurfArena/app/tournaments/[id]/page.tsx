@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Trophy, Users, MapPin, Calendar, Radio } from 'lucide-react'
 import { AppShell } from '@/components/app-shell'
 import { BackHeader } from '@/components/back-header'
-import { tournaments, playerRanks, formatCurrency } from '@/TurfArena/lib/data'
+import { tournaments, playerRanks, formatCurrency } from '@/lib/data'
 
 const tabs = ['Overview', 'Teams', 'Fixtures', 'Leaderboard', 'Rules'] as const
 type Tab = (typeof tabs)[number]

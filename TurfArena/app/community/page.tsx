@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Heart, MessageCircle, Share2, Send, ImageIcon, Trophy, Flame, Award, Radio, X } from 'lucide-react'
 import { AppShell, PageHeader } from '@/components/app-shell'
 import { BottomNav } from '@/components/bottom-nav'
-import { feedPosts, type FeedPost } from '@/TurfArena/lib/data'
+import { feedPosts, type FeedPost } from '@/lib/data'
 
 const typeColors: Record<FeedPost['type'], { bg: string; text: string; icon: typeof Trophy }> = {
   'Match Result': { bg: 'bg-success/15', text: 'text-success', icon: Radio },

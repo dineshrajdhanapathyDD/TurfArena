@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronUp, ChevronDown, Minus, Crown } from 'lucide-react'
 import { AppShell, PageHeader } from '@/components/app-shell'
 import { BottomNav } from '@/components/bottom-nav'
-import { playerRanks } from '@/TurfArena/lib/data'
+import { playerRanks } from '@/lib/data'
 
 const tabs = ['Players', 'Teams', 'Turfs'] as const
 const ranges = ['Weekly', 'Monthly', 'All Time'] as const

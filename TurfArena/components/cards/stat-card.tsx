@@ -1,5 +1,5 @@
 import { type LucideIcon } from 'lucide-react'
-import { cn } from '@/TurfArena/lib/utils'
+import { cn } from '@/lib/utils'
 
 export function StatCard({
   icon: Icon,

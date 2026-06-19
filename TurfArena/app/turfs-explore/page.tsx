@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react'
 import { useState } from 'react'
-import { tournaments, turfs } from '@/TurfArena/lib/data'
+import { tournaments, turfs } from '@/lib/data'
 import { ProtectedRoute } from '@/components/protected-route'
 import { AppShell } from '@/components/app-shell'
 

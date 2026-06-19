@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Radio, Goal, Footprints, Square, Flag, ChevronLeft, ChevronRight } from 'lucide-react'
 import { AppShell } from '@/components/app-shell'
 import { BackHeader } from '@/components/back-header'
-import { matchEvents } from '@/TurfArena/lib/data'
+import { matchEvents } from '@/lib/data'
 
 type Sport = 'football' | 'cricket'
 

@@ -4,7 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { Star, MapPin, Clock, IndianRupee } from 'lucide-react'
-import { type Turf, formatCurrency } from '@/TurfArena/lib/data'
+import { type Turf, formatCurrency } from '@/lib/data'
 import { SportIcon } from '@/components/sport-icon'
 
 export function TurfCard({ turf }: { turf: Turf }) {

@@ -6,7 +6,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { Star, MapPin, Phone, Mail, ChevronDown } from 'lucide-react'
-import { turfs, formatCurrency } from '@/TurfArena/lib/data'
+import { turfs, formatCurrency } from '@/lib/data'
 
 const facilities = [
   { name: 'Parking Area', icon: '🅿️' },

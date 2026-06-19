@@ -6,8 +6,8 @@ import {
   Zap, TrendingUp, Bookmark, Search, Bell,
 } from 'lucide-react'
 import { ProtectedRoute } from '@/components/protected-route'
-import { useAuth } from '@/TurfArena/lib/auth-context'
-import { turfs, tournaments, formatCurrency } from '@/TurfArena/lib/data'
+import { useAuth } from '@/lib/auth-context'
+import { turfs, tournaments, formatCurrency } from '@/lib/data'
 import Image from 'next/image'
 import Link from 'next/link'
 
