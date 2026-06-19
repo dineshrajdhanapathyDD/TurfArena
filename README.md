@@ -320,110 +320,64 @@ Open these in [draw.io](https://app.diagrams.net) or the VS Code Draw.io extensi
 
 ```
 .
-├── TurfArena/                        # 🎯 Main Next.js Application
-│   ├── app/                          # App Router (pages + API)
-│   │   ├── page.tsx                  # Splash / landing page
-│   │   ├── layout.tsx                # Root layout with AuthProvider
-│   │   ├── globals.css               # Tailwind + CSS variables
-│   │   ├── auth/                     # Login page
-│   │   ├── onboarding/               # 3-step onboarding wizard
-│   │   ├── home/                     # Role-based redirect hub
-│   │   ├── customer-dashboard/       # Player dashboard (credits, bookings, turfs)
-│   │   ├── discover/                 # Tournament discovery + sport filters
-│   │   ├── community/                # Social feed (posts, likes, comments)
-│   │   ├── leaderboards/             # Rankings with podium (Players/Teams/Turfs)
-│   │   ├── live/                     # Live match center (football + cricket)
-│   │   ├── ai/                       # AI Coach chat + match predictions
-│   │   ├── profile/                  # Player profile + achievements
-│   │   ├── stats/                    # Statistics (charts, sport breakdown)
-│   │   ├── team/                     # Team management + formation view
-│   │   ├── tournaments/              # Tournament listing
-│   │   │   └── [id]/                 # Tournament detail (tabs: Overview/Teams/Fixtures)
-│   │   │       └── register/         # Team registration wizard (3 steps)
-│   │   ├── turfs/                    # Turf listing + detail
-│   │   │   └── [id]/                 # Turf detail + slot booking
-│   │   ├── turfs-explore/            # Turf search with filters
-│   │   ├── my-bookings/              # User's bookings
-│   │   ├── notifications/            # Notification center
-│   │   ├── settings/                 # User settings
-│   │   ├── organizer/                # 🏆 Organizer Dashboard
-│   │   │   ├── page.tsx              # KPIs, tournament list, activity feed
-│   │   │   ├── analytics/            # Tournament analytics
-│   │   │   ├── revenue/              # Revenue tracking
-│   │   │   ├── settings/             # Organizer settings
-│   │   │   ├── teams/                # Team management
-│   │   │   └── tournaments/          # Tournament CRUD
-│   │   ├── owner/                    # 🏟️ Turf Owner Dashboard
-│   │   │   ├── page.tsx              # Revenue, occupancy, turfs overview
-│   │   │   ├── bookings/             # Booking management
-│   │   │   ├── expenses/             # Expense tracking
-│   │   │   ├── revenue/              # Revenue analytics
-│   │   │   ├── settings/             # Owner settings
-│   │   │   └── turfs/                # Turf management
-│   │   └── api/                      # ⚡ REST API Endpoints
-│   │       ├── tournaments/          # GET, POST
-│   │       │   └── [id]/             # GET, PATCH
-│   │       │       └── register/     # POST (team registration)
-│   │       ├── matches/              # GET, POST
-│   │       │   └── [id]/score/       # PATCH (live score updates)
-│   │       ├── players/              # GET
-│   │       │   └── [id]/stats/       # GET (per-sport stats)
-│   │       ├── teams/                # GET, POST
-│   │       └── turfs/                # GET
-│   │           └── [id]/             # GET
-│   │               └── book/         # POST (slot booking)
-│   ├── components/                   # 🧩 Shared UI Components
-│   │   ├── app-shell.tsx             # Mobile app shell wrapper
-│   │   ├── bottom-nav.tsx            # Bottom navigation (5 tabs)
-│   │   ├── sidebar.tsx               # Role-based sidebar menu
-│   │   ├── back-header.tsx           # Back navigation header
-│   │   ├── protected-route.tsx       # Auth + role guard
-│   │   ├── organizer-layout.tsx      # Organizer page layout
-│   │   ├── owner-layout.tsx          # Owner page layout
-│   │   ├── countdown.tsx             # Tournament countdown timer
-│   │   ├── sport-icon.tsx            # Sport-specific icons
-│   │   ├── cards/                    # Reusable card components
-│   │   │   ├── stat-card.tsx
-│   │   │   ├── tournament-card.tsx
-│   │   │   └── turf-card.tsx
-│   │   └── ui/                       # Base UI primitives
-│   │       └── button.tsx
-│   ├── lib/                          # 📚 Utilities
-│   │   ├── data.ts                   # Mock data + type definitions
-│   │   ├── auth-context.tsx          # Auth provider (4 roles)
-│   │   └── utils.ts                  # cn() Tailwind helper
-│   ├── public/                       # 🖼️ Static Assets
-│   │   ├── images/                   # Tournament, turf, player images
-│   │   ├── icon.svg                  # App icon
-│   │   └── placeholder-logo.png      # Default logo
-│   ├── docs/                         # 📄 Documentation
-│   │   └── architecture.drawio       # AWS architecture diagram
-│   ├── next.config.mjs               # Next.js configuration
-│   ├── tsconfig.json                 # TypeScript config
-│   ├── postcss.config.mjs            # PostCSS + Tailwind
-│   ├── package.json                  # Dependencies + scripts
-│   ├── package-lock.json             # Lockfile
-│   ├── SETUP_GUIDE.md                # Team setup guide
-│   └── PERFORMANCE_OPTIMIZATIONS.md  # Performance notes
-│
-├── lib/                              # ☁️ AWS Service Layer
-│   └── aws/
+├── app/                              # Next.js App Router
+│   ├── page.tsx                      # Splash / landing page
+│   ├── layout.tsx                    # Root layout with AuthProvider
+│   ├── globals.css                   # Tailwind + CSS variables
+│   ├── auth/                         # Login page
+│   ├── onboarding/                   # 3-step onboarding wizard
+│   ├── home/                         # Role-based redirect hub
+│   ├── customer-dashboard/           # Player dashboard
+│   ├── discover/                     # Tournament discovery + sport filters
+│   ├── community/                    # Social feed (posts, likes, comments)
+│   ├── leaderboards/                 # Rankings with podium view
+│   ├── live/                         # Live match center (football + cricket)
+│   ├── ai/                           # AI Coach chat + match predictions
+│   ├── profile/                      # Player profile + achievements
+│   ├── stats/                        # Player statistics + charts
+│   ├── team/                         # Team management + formation
+│   ├── tournaments/                  # Tournament listing + detail
+│   │   └── [id]/
+│   │       ├── page.tsx              # Tournament detail (tabs)
+│   │       └── register/             # Team registration wizard
+│   ├── turfs/                        # Turf listing + detail
+│   │   └── [id]/                     # Turf detail + booking
+│   ├── turfs-explore/                # Turf search (customer)
+│   ├── my-bookings/                  # User's bookings
+│   ├── notifications/                # Notification center
+│   ├── settings/                     # User settings
+│   ├── organizer/                    # Organizer dashboard + sub-pages
+│   ├── owner/                        # Turf owner dashboard + sub-pages
+│   └── api/                          # REST API endpoints
+│       ├── tournaments/              # CRUD + register
+│       ├── matches/                  # CRUD + live score
+│       ├── players/                  # List + stats
+│       ├── teams/                    # CRUD
+│       └── turfs/                    # List + book
+├── components/                       # Shared UI components
+├── lib/                              # Utilities + services
+│   ├── data.ts                       # Mock data + types
+│   ├── auth-context.tsx              # Auth provider (4 roles)
+│   ├── utils.ts                      # Tailwind helper
+│   └── aws/                          # AWS service layer
 │       ├── index.ts                  # Barrel exports
-│       ├── config.ts                 # AWS_ENABLED flag + region
-│       ├── dynamodb.ts               # DynamoDB client + CRUD helpers
-│       ├── eventbridge.ts            # Event publisher + notifications
-│       └── tables.ts                 # Table schemas + TypeScript types
-│
-├── scripts/                          # 🔧 Infrastructure Scripts
-│   ├── setup-aws.ts                  # Creates 9 DynamoDB tables + EventBridge bus
-│   └── seed-aws.ts                   # Seeds tables with demo data
-│
+│       ├── config.ts                 # AWS_ENABLED flag
+│       ├── dynamodb.ts               # DynamoDB client + CRUD
+│       ├── eventbridge.ts            # Event publisher
+│       └── tables.ts                 # Table schemas + types
+├── scripts/                          # Infrastructure scripts
+│   ├── setup-aws.ts                  # Creates DynamoDB tables + EventBridge
+│   └── seed-aws.ts                   # Seeds demo data
+├── docs/                             # Diagrams
+│   ├── architecture.drawio           # System architecture
+│   └── tournament-flow.drawio        # Tournament flow
+├── public/                           # Static assets + images
 ├── .env.example                      # Environment variable template
-├── .env.local                        # Local credentials (gitignored)
 ├── .gitignore                        # Git ignore rules
-├── AWS_SETUP.md                      # Detailed AWS integration guide
-├── package.json                      # Root scripts (aws:setup, aws:seed)
-├── tsconfig.json                     # Path alias config (@/*)
+├── AWS_SETUP.md                      # AWS integration guide
+├── next.config.mjs                   # Next.js config
+├── tsconfig.json                     # TypeScript config
+├── package.json                      # Dependencies + scripts
 └── README.md                         # This file
 ```
 
@@ -441,7 +395,7 @@ Open these in [draw.io](https://app.diagrams.net) or the VS Code Draw.io extensi
 
 ```bash
 git clone https://github.com/<your-username>/TurfArena.git
-cd TurfArena/TurfArena
+cd TurfArena
 npm install
 ```
 
@@ -469,8 +423,6 @@ Open [http://localhost:3000](http://localhost:3000). The app uses mock data when
 ### Quick Setup
 
 ```bash
-# From the root directory:
-
 # 1. Fill in .env.local with your AWS credentials
 #    AWS_REGION=us-east-1
 #    AWS_ACCESS_KEY_ID=your-key
@@ -480,7 +432,7 @@ Open [http://localhost:3000](http://localhost:3000). The app uses mock data when
 npm run aws:init
 
 # 3. Start app (now connected to DynamoDB)
-cd TurfArena && npm run dev
+npm run dev
 ```
 
 ### DynamoDB Tables (9 tables, PAY_PER_REQUEST)
@@ -537,15 +489,7 @@ See [AWS_SETUP.md](./AWS_SETUP.md) for full details, IAM policies, and Vercel de
 
 ## Available Scripts
 
-### Root Level (AWS infrastructure)
-
-| Command | Description |
-|---------|-------------|
-| `npm run aws:setup` | Create DynamoDB tables + EventBridge bus |
-| `npm run aws:seed` | Populate tables with demo data |
-| `npm run aws:init` | Setup + seed in one command |
-
-### Inside TurfArena/ (Next.js app)
+### Root Level (scripts)
 
 | Command | Description |
 |---------|-------------|
@@ -553,6 +497,9 @@ See [AWS_SETUP.md](./AWS_SETUP.md) for full details, IAM policies, and Vercel de
 | `npm run build` | Production build |
 | `npm run start` | Start production server |
 | `npm run lint` | Run ESLint |
+| `npm run aws:setup` | Create DynamoDB tables + EventBridge bus |
+| `npm run aws:seed` | Populate tables with demo data |
+| `npm run aws:init` | Setup + seed in one command |
 
 ---
 
@@ -576,7 +523,7 @@ See [AWS_SETUP.md](./AWS_SETUP.md) for full details, IAM policies, and Vercel de
 ## Deploy to Vercel
 
 1. Push to GitHub
-2. Import repo in [Vercel](https://vercel.com) — set root directory to `TurfArena/`
+2. Import repo in [Vercel](https://vercel.com)
 3. Add environment variables:
    - `AWS_REGION` = `us-east-1`
    - `AWS_ACCESS_KEY_ID`
