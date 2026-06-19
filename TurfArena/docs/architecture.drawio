@@ -1,0 +1,257 @@
+<mxfile host="app.diagrams.net" modified="2026-06-14" agent="TurfArena" version="24.0.0" type="device">
+  <diagram id="turfarena-h0-architecture" name="TurfArena - H0 Hackathon Architecture">
+    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1400" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Title -->
+        <mxCell id="title" value="TurfArena – System Architecture" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=26;fontStyle=1;fontColor=#1a1a1a;" vertex="1" parent="1">
+          <mxGeometry x="550" y="20" width="500" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="subtitle" value="H0: Hack the Zero Stack with Vercel v0 + AWS Databases" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=14;fontColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="550" y="55" width="500" height="25" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== CLIENT LAYER ==================== -->
+        <mxCell id="client-group" value="Clients (Browser / Mobile)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#7B1FA2;dashed=1;verticalAlign=top;fontStyle=1;fontSize=12;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="300" y="100" width="1000" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="client-web" value="Web Browser&#xa;(Desktop / Mobile)&#xa;Progressive Web App" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#CE93D8;strokeColor=#7B1FA2;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="400" y="125" width="160" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="client-mobile" value="Mobile App&#xa;(Future - React Native)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#CE93D8;strokeColor=#7B1FA2;fontSize=10;fontStyle=1;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="620" y="125" width="160" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="client-websocket" value="WebSocket Client&#xa;(Live Score Updates)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#CE93D8;strokeColor=#7B1FA2;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="840" y="125" width="160" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== VERCEL PLATFORM (Dashed Box) ==================== -->
+        <mxCell id="vercel-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FAFAFA;strokeColor=#000000;strokeWidth=2;dashed=1;dashPattern=8 4;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="200" y="230" width="1200" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="vercel-title" value="▲ VERCEL PLATFORM – Deployed at turfarena.vercel.app" style="text;html=1;align=left;verticalAlign=top;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=13;fontStyle=1;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="220" y="238" width="420" height="22" as="geometry" />
+        </mxCell>
+
+        <mxCell id="nextjs-app" value="Next.js 14&#xa;(App Router)&#xa;Server-Side Rendering&#xa;+ API Routes" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#212121;strokeColor=#000000;fontColor=#ffffff;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="240" y="275" width="160" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="v0-components" value="v0 AI Components&#xa;(UI Generation)&#xa;shadcn/ui + Tailwind" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#212121;strokeColor=#000000;fontColor=#ffffff;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="430" y="275" width="160" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="vercel-edge" value="Vercel Edge Functions&#xa;(Auth Middleware)&#xa;JWT Token Validation" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#212121;strokeColor=#000000;fontColor=#ffffff;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="620" y="275" width="160" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="vercel-env" value="Vercel Env Variables&#xa;AWS_ACCESS_KEY_ID&#xa;AWS_SECRET_ACCESS_KEY&#xa;AWS_REGION" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#424242;strokeColor=#000000;fontColor=#FF5252;fontSize=9;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="810" y="275" width="170" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="vercel-analytics-box" value="Vercel Analytics&#xa;+ Speed Insights&#xa;(Web Vitals / LCP / CLS)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#212121;strokeColor=#000000;fontColor=#ffffff;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1010" y="275" width="170" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="vercel-cdn" value="Vercel Edge Network (Global CDN) – Static Assets + ISR Cache" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#616161;strokeColor=#000000;fontColor=#ffffff;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="240" y="360" width="940" height="35" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== AWS CLOUD (Dashed Box) ==================== -->
+        <mxCell id="aws-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#FF9800;strokeWidth=2;dashed=1;dashPattern=8 4;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="200" y="450" width="1200" height="520" as="geometry" />
+        </mxCell>
+        <mxCell id="aws-title" value="☁️ AWS CLOUD (ap-south-1 / Mumbai)" style="text;html=1;align=left;verticalAlign=top;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=13;fontStyle=1;fontColor=#E65100;" vertex="1" parent="1">
+          <mxGeometry x="220" y="458" width="300" height="22" as="geometry" />
+        </mxCell>
+
+        <!-- API Gateway -->
+        <mxCell id="apigw" value="Amazon API Gateway&#xa;(REST API)&#xa;Request routing, throttling,&#xa;API key validation" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FF9800;strokeColor=#E65100;fontColor=#000000;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="350" y="495" width="200" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="apigw-ws" value="API Gateway&#xa;(WebSocket API)&#xa;Real-time score push&#xa;to connected clients" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FF9800;strokeColor=#E65100;fontColor=#000000;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="600" y="495" width="200" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Lambda Functions -->
+        <mxCell id="lambda-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#FF9800;dashed=1;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="240" y="600" width="1120" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="lambda-title" value="AWS Lambda Functions (Serverless Compute)" style="text;html=1;align=left;verticalAlign=top;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=11;fontStyle=1;fontColor=#E65100;" vertex="1" parent="1">
+          <mxGeometry x="255" y="605" width="320" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="fn-tournament" value="&#x03BB; TournamentHandler&#xa;Create / manage&#xa;tournaments" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFB74D;strokeColor=#E65100;fontSize=9;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="260" y="635" width="130" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="fn-match" value="&#x03BB; MatchHandler&#xa;Score updates,&#xa;live tracking" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFB74D;strokeColor=#E65100;fontSize=9;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="410" y="635" width="130" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="fn-player" value="&#x03BB; PlayerHandler&#xa;Profiles, stats,&#xa;registrations" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFB74D;strokeColor=#E65100;fontSize=9;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="560" y="635" width="130" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="fn-ranking" value="&#x03BB; RankingHandler&#xa;Leaderboards,&#xa;ELO calculation" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFB74D;strokeColor=#E65100;fontSize=9;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="710" y="635" width="130" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="fn-booking" value="&#x03BB; BookingHandler&#xa;Turf reservations,&#xa;slot management" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFB74D;strokeColor=#E65100;fontSize=9;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="860" y="635" width="130" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="fn-ai" value="&#x03BB; AIAnalytics&#xa;Match insights,&#xa;predictions" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFB74D;strokeColor=#E65100;fontSize=9;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1010" y="635" width="130" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- DynamoDB (Primary Database) -->
+        <mxCell id="dynamo-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8EAF6;strokeColor=#1A237E;dashed=1;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="240" y="745" width="700" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="dynamo-title" value="Amazon DynamoDB (Primary Database – Serverless, Pay-per-Request)" style="text;html=1;align=left;verticalAlign=top;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=11;fontStyle=1;fontColor=#1A237E;" vertex="1" parent="1">
+          <mxGeometry x="255" y="750" width="430" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl-players" value="Players&#xa;PK: playerId" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=8;fillColor=#3F51B5;strokeColor=#1A237E;fontColor=#ffffff;fontSize=9;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="260" y="780" width="85" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl-teams" value="Teams&#xa;PK: teamId" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=8;fillColor=#3F51B5;strokeColor=#1A237E;fontColor=#ffffff;fontSize=9;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="360" y="780" width="85" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl-tournaments" value="Tournaments&#xa;PK: tournamentId" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=8;fillColor=#3F51B5;strokeColor=#1A237E;fontColor=#ffffff;fontSize=9;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="460" y="780" width="100" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl-matches" value="Matches&#xa;PK: matchId" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=8;fillColor=#3F51B5;strokeColor=#1A237E;fontColor=#ffffff;fontSize=9;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="575" y="780" width="85" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl-stats" value="PlayerStats&#xa;PK: playerId" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=8;fillColor=#3F51B5;strokeColor=#1A237E;fontColor=#ffffff;fontSize=9;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="675" y="780" width="85" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl-turfs" value="Turfs&#xa;PK: turfId" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=8;fillColor=#3F51B5;strokeColor=#1A237E;fontColor=#ffffff;fontSize=9;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="775" y="780" width="85" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl-bookings" value="Bookings&#xa;PK: bookingId" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=8;fillColor=#3F51B5;strokeColor=#1A237E;fontColor=#ffffff;fontSize=9;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="875" y="780" width="85" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- EventBridge -->
+        <mxCell id="eventbridge-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#E65100;dashed=1;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="980" y="745" width="380" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="eventbridge-title" value="Amazon EventBridge (Event-Driven)" style="text;html=1;align=left;verticalAlign=top;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=11;fontStyle=1;fontColor=#E65100;" vertex="1" parent="1">
+          <mxGeometry x="995" y="750" width="280" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="eb-bus" value="TurfArena-Events Bus&#xa;Event routing rules" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFB74D;strokeColor=#E65100;fontSize=9;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1000" y="780" width="140" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="eb-targets" value="Targets:&#xa;• Push notifications&#xa;• Score broadcasts&#xa;• Email alerts (SNS)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE0B2;strokeColor=#E65100;fontSize=9;fontStyle=0;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1160" y="780" width="150" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- Observability inside AWS -->
+        <mxCell id="obs-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FCE4EC;strokeColor=#C62828;dashed=1;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="240" y="880" width="1120" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="obs-title" value="Observability and Monitoring (AWS Well-Architected: Operational Excellence)" style="text;html=1;align=left;verticalAlign=top;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=11;fontStyle=1;fontColor=#C62828;" vertex="1" parent="1">
+          <mxGeometry x="255" y="885" width="460" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="obs-cw-logs" value="CloudWatch Logs&#xa;Lambda execution logs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EF5350;strokeColor=#C62828;fontColor=#ffffff;fontSize=9;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="260" y="910" width="150" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="obs-cw-metrics" value="CloudWatch Metrics&#xa;Latency / errors / throttles" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EF5350;strokeColor=#C62828;fontColor=#ffffff;fontSize=9;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="430" y="910" width="170" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="obs-xray" value="AWS X-Ray&#xa;Distributed tracing" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EF5350;strokeColor=#C62828;fontColor=#ffffff;fontSize=9;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="620" y="910" width="140" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="obs-alarms" value="CloudWatch Alarms&#xa;+ SNS Alerts" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EF5350;strokeColor=#C62828;fontColor=#ffffff;fontSize=9;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="780" y="910" width="140" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="obs-dynamo-metrics" value="DynamoDB Metrics&#xa;Read/Write units, throttles" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EF5350;strokeColor=#C62828;fontColor=#ffffff;fontSize=9;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="940" y="910" width="170" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="obs-vercel" value="Vercel Analytics + Speed Insights&#xa;(Frontend: LCP, CLS, INP, TTFB)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#212121;strokeColor=#000000;fontColor=#ffffff;fontSize=9;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1130" y="910" width="210" height="35" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== CONNECTIONS (Directional Arrows) ==================== -->
+
+        <!-- Clients to Vercel -->
+        <mxCell id="conn-1" value="HTTPS" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeColor=#7B1FA2;strokeWidth=2;fontSize=9;fontColor=#7B1FA2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="client-group" target="vercel-box">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Vercel to API Gateway -->
+        <mxCell id="conn-2" value="REST API calls" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeColor=#E65100;strokeWidth=2;fontSize=9;fontColor=#E65100;" edge="1" parent="1" source="nextjs-app" target="apigw">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Vercel Edge to WebSocket -->
+        <mxCell id="conn-2b" value="WebSocket" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeColor=#E65100;strokeWidth=2;fontSize=9;fontColor=#E65100;dashed=1;" edge="1" parent="1" source="vercel-edge" target="apigw-ws">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- API Gateway to Lambda -->
+        <mxCell id="conn-3" value="Invoke" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeColor=#E65100;strokeWidth=2;fontSize=9;fontColor=#E65100;" edge="1" parent="1" source="apigw" target="lambda-box">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-3b" value="Invoke" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeColor=#E65100;strokeWidth=2;fontSize=9;fontColor=#E65100;" edge="1" parent="1" source="apigw-ws" target="lambda-box">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Lambda to DynamoDB -->
+        <mxCell id="conn-4" value="Read / Write" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeColor=#1A237E;strokeWidth=2;fontSize=9;fontColor=#1A237E;" edge="1" parent="1" source="lambda-box" target="dynamo-box">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Lambda to EventBridge -->
+        <mxCell id="conn-5" value="PutEvents" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeColor=#E65100;strokeWidth=2;fontSize=9;fontColor=#E65100;" edge="1" parent="1" source="lambda-box" target="eventbridge-box">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- EventBridge bus to targets -->
+        <mxCell id="conn-6" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeColor=#E65100;strokeWidth=1;" edge="1" parent="1" source="eb-bus" target="eb-targets">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- EventBridge back to clients (push) -->
+        <mxCell id="conn-7" value="Push notifications" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeColor=#E65100;strokeWidth=1;dashed=1;fontSize=9;fontColor=#E65100;" edge="1" parent="1" source="eb-targets" target="client-websocket">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1450" y="808" />
+              <mxPoint x="1450" y="150" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Lambda to Observability -->
+        <mxCell id="conn-8" value="Logs + Traces" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeColor=#C62828;strokeWidth=1;dashed=1;fontSize=8;fontColor=#C62828;" edge="1" parent="1" source="lambda-box" target="obs-box">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- DynamoDB to Observability -->
+        <mxCell id="conn-9" value="Metrics" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeColor=#C62828;strokeWidth=1;dashed=1;fontSize=8;fontColor=#C62828;" edge="1" parent="1" source="dynamo-box" target="obs-box">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Legend -->
+        <mxCell id="legend-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FAFAFA;strokeColor=#BDBDBD;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="200" y="1000" width="1200" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-title" value="Legend" style="text;html=1;align=left;verticalAlign=top;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="220" y="1005" width="60" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-1" value="— Solid arrow = synchronous request/response" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="220" y="1030" width="290" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-2" value="--- Dashed arrow = asynchronous / event-driven" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="220" y="1050" width="280" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-3" value="--- Dashed box = future / planned component" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="220" y="1070" width="270" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-security" value="&#x1F512; Security: AWS credentials stored in Vercel Environment Variables (never in code/repo)" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=10;fontStyle=1;fontColor=#C62828;" vertex="1" parent="1">
+          <mxGeometry x="550" y="1030" width="530" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-wa" value="&#x2705; AWS Well-Architected: Operational Excellence, Security, Reliability, Performance, Cost Optimization" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=10;fontStyle=1;fontColor=#1B5E20;" vertex="1" parent="1">
+          <mxGeometry x="550" y="1050" width="600" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-db" value="&#x1F4BE; Required Database: Amazon DynamoDB (AWS Database)" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=10;fontStyle=1;fontColor=#1A237E;" vertex="1" parent="1">
+          <mxGeometry x="550" y="1070" width="370" height="20" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
