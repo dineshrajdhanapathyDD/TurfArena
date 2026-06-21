@@ -25,9 +25,9 @@ export default function SplashPage() {
           initial={{ scale: 0, rotate: -15 }}
           animate={{ scale: 1, rotate: 0 }}
           transition={{ type: 'spring', stiffness: 220, damping: 16 }}
-          className="w-16 h-16 rounded-full bg-gradient-to-br from-cyan-400 to-teal-500 flex items-center justify-center mb-4 shadow-lg"
+          className="w-20 h-20 rounded-2xl flex items-center justify-center mb-4 shadow-lg overflow-hidden"
         >
-          <span className="text-2xl font-bold text-white">T</span>
+          <Image src="/images/turfarena-logo.png" alt="TurfArena" width={80} height={80} className="w-full h-full object-cover" />
         </motion.div>
 
         <motion.p

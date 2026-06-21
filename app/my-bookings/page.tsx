@@ -111,15 +111,15 @@ export default function MyBookingsPage() {
     <ProtectedRoute allowedRoles={['customer']}>
       <div className="min-h-screen w-full bg-background">
         {/* Header */}
-        <div className="bg-white border-b border-gray-200 sticky top-0 z-30">
+        <div className="bg-surface-2 border-b border-border sticky top-0 z-30">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 py-4 flex items-center gap-3">
             <Link
               href="/customer-dashboard"
-              className="p-2 -ml-2 rounded-xl hover:bg-gray-100 transition-colors"
+              className="p-2 -ml-2 rounded-xl hover:bg-surface-2 transition-colors"
             >
-              <ChevronLeft className="w-5 h-5 text-gray-700" />
+              <ChevronLeft className="w-5 h-5 text-foreground" />
             </Link>
-            <h1 className="text-xl font-bold text-gray-900">My Bookings</h1>
+            <h1 className="text-xl font-bold text-foreground">My Bookings</h1>
           </div>
 
           {/* Tabs */}
@@ -130,7 +130,7 @@ export default function MyBookingsPage() {
                   key={tab}
                   onClick={() => setActiveTab(tab)}
                   className={`relative px-4 py-2.5 text-sm font-medium whitespace-nowrap transition-colors ${
-                    activeTab === tab ? 'text-green-700' : 'text-gray-500 hover:text-gray-700'
+                    activeTab === tab ? 'text-green-700' : 'text-muted-foreground hover:text-foreground'
                   }`}
                 >
                   {tab}
@@ -160,9 +160,9 @@ export default function MyBookingsPage() {
             >
               {filtered.length === 0 ? (
                 <div className="text-center py-16">
-                  <Calendar className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                  <p className="text-gray-500 font-medium">No bookings found</p>
-                  <p className="text-gray-400 text-sm mt-1">Your {activeTab.toLowerCase()} bookings will appear here</p>
+                  <Calendar className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                  <p className="text-muted-foreground font-medium">No bookings found</p>
+                  <p className="text-muted-foreground text-sm mt-1">Your {activeTab.toLowerCase()} bookings will appear here</p>
                 </div>
               ) : (
                 filtered.map((booking, idx) => (
@@ -171,7 +171,7 @@ export default function MyBookingsPage() {
                     initial={{ opacity: 0, y: 12 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: idx * 0.05 }}
-                    className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow"
+                    className="bg-surface-2 rounded-2xl shadow-sm border border-border overflow-hidden hover:shadow-md transition-shadow"
                   >
                     <div className="flex flex-col sm:flex-row">
                       {/* Image */}
@@ -188,8 +188,8 @@ export default function MyBookingsPage() {
                       <div className="flex-1 p-4 sm:p-5">
                         <div className="flex items-start justify-between mb-2">
                           <div>
-                            <h3 className="font-bold text-gray-900 text-base">{booking.turfName}</h3>
-                            <p className="text-sm text-gray-500">{booking.sport}</p>
+                            <h3 className="font-bold text-foreground text-base">{booking.turfName}</h3>
+                            <p className="text-sm text-muted-foreground">{booking.sport}</p>
                           </div>
                           <span className={`text-xs font-semibold px-2.5 py-1 rounded-full border capitalize ${statusColor(booking.status)}`}>
                             {booking.status}
@@ -197,26 +197,26 @@ export default function MyBookingsPage() {
                         </div>
 
                         <div className="grid grid-cols-2 gap-2 mt-3 text-sm">
-                          <div className="flex items-center gap-1.5 text-gray-600">
+                          <div className="flex items-center gap-1.5 text-muted-foreground">
                             <Calendar className="w-3.5 h-3.5" />
                             <span>{booking.date}</span>
                           </div>
-                          <div className="flex items-center gap-1.5 text-gray-600">
+                          <div className="flex items-center gap-1.5 text-muted-foreground">
                             <Clock className="w-3.5 h-3.5" />
                             <span>{booking.time} · {booking.duration}</span>
                           </div>
-                          <div className="flex items-center gap-1.5 text-gray-600">
+                          <div className="flex items-center gap-1.5 text-muted-foreground">
                             <MapPin className="w-3.5 h-3.5" />
                             <span>{booking.location}</span>
                           </div>
-                          <div className="flex items-center gap-1.5 text-gray-600">
+                          <div className="flex items-center gap-1.5 text-muted-foreground">
                             <Users className="w-3.5 h-3.5" />
                             <span>{booking.people} players</span>
                           </div>
                         </div>
 
-                        <div className="flex items-center justify-between mt-4 pt-3 border-t border-gray-100">
-                          <p className="font-bold text-gray-900">₹{booking.amount.toLocaleString()}</p>
+                        <div className="flex items-center justify-between mt-4 pt-3 border-t border-border">
+                          <p className="font-bold text-foreground">₹{booking.amount.toLocaleString()}</p>
                           {booking.status === 'upcoming' && (
                             <button className="flex items-center gap-1.5 text-red-500 hover:text-red-600 text-sm font-medium transition-colors">
                               <X className="w-3.5 h-3.5" />

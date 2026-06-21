@@ -33,10 +33,10 @@ export default function TurfDetailPage({
   const durationOptions = ['1 hour', '2 hours', '3 hours']
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100">
+    <div className="min-h-screen bg-background text-foreground">
       {/* ===== HEADER SECTION ===== */}
       {/* NAVIGATION HEADER */}
-      <header className="bg-white shadow-md sticky top-0 z-50 border-b border-blue-100">
+      <header className="bg-surface-2 shadow-md sticky top-0 z-50 border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* LOGO */}
@@ -46,10 +46,10 @@ export default function TurfDetailPage({
             
             {/* NAVIGATION MENU */}
             <nav className="hidden md:flex items-center gap-8">
-              <Link href="/home" className="text-sm font-medium text-gray-700 hover:text-blue-600 transition">Home</Link>
+              <Link href="/home" className="text-sm font-medium text-foreground hover:text-blue-600 transition">Home</Link>
               <Link href="/turfs" className="text-sm font-medium text-blue-600 font-semibold">Book</Link>
-              <Link href="/tournaments" className="text-sm font-medium text-gray-700 hover:text-blue-600 transition">Tournaments</Link>
-              <Link href="/community" className="text-sm font-medium text-gray-700 hover:text-blue-600 transition">Contact</Link>
+              <Link href="/tournaments" className="text-sm font-medium text-foreground hover:text-blue-600 transition">Tournaments</Link>
+              <Link href="/community" className="text-sm font-medium text-foreground hover:text-blue-600 transition">Contact</Link>
             </nav>
             
             {/* USER PROFILE */}
@@ -61,7 +61,7 @@ export default function TurfDetailPage({
                 height={32}
                 className="size-8 rounded-full object-cover border-2 border-blue-200"
               />
-              <button className="flex items-center gap-1 text-sm font-medium text-gray-700 hover:text-blue-600 transition">
+              <button className="flex items-center gap-1 text-sm font-medium text-foreground hover:text-blue-600 transition">
                 Tani <ChevronDown className="size-4" />
               </button>
             </div>
@@ -102,20 +102,20 @@ export default function TurfDetailPage({
                 <div className="flex items-center gap-1">
                   <Star className="size-5 fill-orange-400 text-orange-400" />
                   <span className="font-semibold text-lg">4.0</span>
-                  <span className="text-gray-600 text-sm">({turf.reviews} reviews)</span>
+                  <span className="text-muted-foreground text-sm">({turf.reviews} reviews)</span>
                 </div>
               </div>
             </div>
 
             {/* Price and Location */}
-            <div className="bg-yellow-100 rounded-lg p-4 mb-6">
+            <div className="bg-surface-2/80 rounded-lg p-4 mb-6">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <p className="text-sm text-gray-600">Rate per hour</p>
-                  <p className="text-lg font-bold">₹{turf.pricePerHour}</p>
+                  <p className="text-sm text-muted-foreground">Rate per hour</p>
+                  <p className="text-lg font-bold text-foreground">₹{turf.pricePerHour}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Location</p>
+                  <p className="text-sm text-muted-foreground">Location</p>
                   <p className="font-semibold flex items-center gap-2">
                     <MapPin className="size-4" /> {turf.area}
                   </p>
@@ -124,7 +124,7 @@ export default function TurfDetailPage({
             </div>
 
             {/* Location Details Box */}
-            <div className="bg-yellow-100 rounded-lg p-4 mb-6">
+            <div className="bg-surface-2/80 rounded-lg p-4 mb-6">
               <h3 className="font-bold mb-3">Location</h3>
               <p className="text-sm mb-3">
                 • Opposite Sri Atma College, Bengaluru<br />
@@ -132,12 +132,12 @@ export default function TurfDetailPage({
                 • https://maps.google.com/...
               </p>
               <div className="h-40 bg-gray-300 rounded mb-3 flex items-center justify-center">
-                <div className="text-gray-600">📍 Map View</div>
+                <div className="text-muted-foreground">📍 Map View</div>
               </div>
             </div>
 
             {/* Rules Section */}
-            <div className="bg-yellow-100 rounded-lg p-4 mb-6">
+            <div className="bg-surface-2/80 rounded-lg p-4 mb-6">
               <h3 className="font-bold mb-3">Rules to follow</h3>
               <ul className="text-sm space-y-2">
                 <li>• Arrive 15 mins prior to your booked time</li>
@@ -150,7 +150,7 @@ export default function TurfDetailPage({
             </div>
 
             {/* AVAILABLE SPORTS SECTION - Replace sport icons and names */}
-            <div className="bg-yellow-100 rounded-lg p-4 mb-6">
+            <div className="bg-surface-2/80 rounded-lg p-4 mb-6">
               <h3 className="font-bold mb-4">Available For</h3>
               <div className="flex gap-8">
                 {/* SPORT 1: FOOTBALL - Replace icon/image */}
@@ -167,7 +167,7 @@ export default function TurfDetailPage({
             </div>
 
             {/* FACILITIES SECTION - Replace facility icons */}
-            <div className="bg-yellow-100 rounded-lg p-4">
+            <div className="bg-surface-2/80 rounded-lg p-4">
               <h3 className="font-bold mb-4">Facilities</h3>
               <div className="grid grid-cols-2 gap-4">
                 {/* FACILITY ICONS - Replace with your icons/images */}
@@ -183,7 +183,7 @@ export default function TurfDetailPage({
 
           {/* Right Column - Booking Form */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg p-6 shadow-lg sticky top-24">
+            <div className="bg-surface-2 rounded-lg p-6 shadow-lg sticky top-24">
               <h2 className="text-xl font-bold mb-6">Book Now</h2>
 
               {/* Date Selector */}
@@ -194,7 +194,7 @@ export default function TurfDetailPage({
                 <select
                   value={date || ''}
                   onChange={(e) => setDate(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-purple-400"
+                  className="w-full px-4 py-3 border border-border rounded-lg text-sm bg-surface text-foreground focus:outline-none focus:border-primary"
                 >
                   <option value="">Select a date</option>
                   <option value="2024-01-20">Jan 20, 2024</option>
@@ -211,7 +211,7 @@ export default function TurfDetailPage({
                 <select
                   value={time || ''}
                   onChange={(e) => setTime(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-purple-400"
+                  className="w-full px-4 py-3 border border-border rounded-lg text-sm bg-surface text-foreground focus:outline-none focus:border-primary"
                 >
                   <option value="">Select a time</option>
                   {timeSlots.map((slot) => (
@@ -228,7 +228,7 @@ export default function TurfDetailPage({
                 <select
                   value={duration || ''}
                   onChange={(e) => setDuration(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-purple-400"
+                  className="w-full px-4 py-3 border border-border rounded-lg text-sm bg-surface text-foreground focus:outline-none focus:border-primary"
                 >
                   <option value="">Select duration</option>
                   {durationOptions.map((dur) => (

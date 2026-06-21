@@ -187,7 +187,7 @@ export default function CustomerDashboard() {
         <div className="max-w-5xl mx-auto px-5 sm:px-8 mt-7">
           <motion.div {...fadeUp} transition={{ delay: 0.35 }}>
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-bold text-gray-900">Upcoming Bookings</h2>
+              <h2 className="text-lg font-bold text-foreground">Upcoming Bookings</h2>
               <Link href="/my-bookings" className="text-sm font-medium text-green-600 hover:text-green-700 flex items-center gap-0.5 transition-colors">
                 View All <ChevronRight className="w-4 h-4" />
               </Link>
@@ -214,14 +214,14 @@ export default function CustomerDashboard() {
                     <div className="flex-1 p-3 sm:p-4">
                       <div className="flex items-start justify-between">
                         <div>
-                          <h3 className="font-semibold text-gray-900 text-sm sm:text-base">{booking.turfName}</h3>
-                          <p className="text-xs text-gray-500 mt-0.5">{booking.sport} · {booking.location}</p>
+                          <h3 className="font-semibold text-foreground text-sm sm:text-base">{booking.turfName}</h3>
+                          <p className="text-xs text-muted-foreground mt-0.5">{booking.sport} · {booking.location}</p>
                         </div>
                         <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-green-100 text-green-700 border border-green-200 flex-shrink-0">
                           Upcoming
                         </span>
                       </div>
-                      <div className="flex items-center gap-3 mt-2 text-xs text-gray-500">
+                      <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
                         <span className="flex items-center gap-1">
                           <Calendar className="w-3 h-3" /> {booking.date}
                         </span>
@@ -243,7 +243,7 @@ export default function CustomerDashboard() {
         <div className="max-w-5xl mx-auto px-5 sm:px-8 mt-8">
           <motion.div {...fadeUp} transition={{ delay: 0.45 }}>
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-bold text-gray-900">Popular Turfs</h2>
+              <h2 className="text-lg font-bold text-foreground">Popular Turfs</h2>
               <Link href="/turfs-explore" className="text-sm font-medium text-green-600 hover:text-green-700 flex items-center gap-0.5 transition-colors">
                 See All <ChevronRight className="w-4 h-4" />
               </Link>
@@ -259,8 +259,8 @@ export default function CustomerDashboard() {
                   className="min-w-[200px] sm:min-w-[240px] flex-shrink-0"
                 >
                   <Link href="/customer-dashboard">
-                    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow group">
-                      <div className="relative h-32 sm:h-36 bg-gray-900">
+                    <div className="glass rounded-2xl overflow-hidden hover:border-primary/30 transition-all group">
+                      <div className="relative h-32 sm:h-36 bg-surface">
                         <Image
                           src={turf.image}
                           alt={turf.name}
@@ -273,13 +273,13 @@ export default function CustomerDashboard() {
                         </div>
                       </div>
                       <div className="p-3 sm:p-4">
-                        <h3 className="font-semibold text-gray-900 text-sm">{turf.name}</h3>
-                        <p className="text-xs text-gray-500 mt-0.5 flex items-center gap-1">
+                        <h3 className="font-semibold text-foreground text-sm">{turf.name}</h3>
+                        <p className="text-xs text-muted-foreground mt-0.5 flex items-center gap-1">
                           <MapPin className="w-3 h-3" /> {turf.area} · {turf.distanceKm} km
                         </p>
                         <div className="flex items-center justify-between mt-2">
-                          <span className="text-sm font-bold text-gray-900">{formatCurrency(turf.pricePerHour)}<span className="text-xs text-gray-400 font-normal">/hr</span></span>
-                          <span className="text-[10px] text-gray-400">{turf.reviews} reviews</span>
+                          <span className="text-sm font-bold text-foreground">{formatCurrency(turf.pricePerHour)}<span className="text-xs text-muted-foreground font-normal">/hr</span></span>
+                          <span className="text-[10px] text-muted-foreground">{turf.reviews} reviews</span>
                         </div>
                       </div>
                     </div>
@@ -296,7 +296,7 @@ export default function CustomerDashboard() {
         <div className="max-w-5xl mx-auto px-5 sm:px-8 mt-8 pb-10">
           <motion.div {...fadeUp} transition={{ delay: 0.55 }}>
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-bold text-gray-900">Featured Tournaments</h2>
+              <h2 className="text-lg font-bold text-foreground">Featured Tournaments</h2>
               <Link href="/tournaments" className="text-sm font-medium text-green-600 hover:text-green-700 flex items-center gap-0.5 transition-colors">
                 View All <ChevronRight className="w-4 h-4" />
               </Link>
@@ -311,8 +311,8 @@ export default function CustomerDashboard() {
                   transition={{ delay: 0.6 + idx * 0.08 }}
                 >
                   <Link href={`/tournaments/${t.id}`}>
-                    <div className="relative bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow group">
-                      <div className="relative h-40 sm:h-48 bg-gray-900">
+                    <div className="relative glass rounded-2xl overflow-hidden hover:border-primary/30 transition-all group">
+                      <div className="relative h-40 sm:h-48 bg-surface">
                         <Image
                           src={t.image}
                           alt={t.name}
@@ -333,26 +333,26 @@ export default function CustomerDashboard() {
                       <div className="p-4">
                         <div className="flex items-center justify-between text-sm">
                           <div>
-                            <p className="text-gray-500 text-xs">Prize Pool</p>
-                            <p className="font-bold text-gray-900">{formatCurrency(t.prizePool)}</p>
+                            <p className="text-muted-foreground text-xs">Prize Pool</p>
+                            <p className="font-bold text-foreground">{formatCurrency(t.prizePool)}</p>
                           </div>
                           <div>
-                            <p className="text-gray-500 text-xs">Entry Fee</p>
-                            <p className="font-bold text-gray-900">{formatCurrency(t.entryFee)}</p>
+                            <p className="text-muted-foreground text-xs">Entry Fee</p>
+                            <p className="font-bold text-foreground">{formatCurrency(t.entryFee)}</p>
                           </div>
                           <div>
-                            <p className="text-gray-500 text-xs">Spots</p>
-                            <p className="font-bold text-gray-900">{t.teamsJoined}/{t.totalSpots}</p>
+                            <p className="text-muted-foreground text-xs">Spots</p>
+                            <p className="font-bold text-foreground">{t.teamsJoined}/{t.totalSpots}</p>
                           </div>
                         </div>
                         {/* Progress bar */}
-                        <div className="mt-3 w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                        <div className="mt-3 w-full h-1.5 bg-surface-2 rounded-full overflow-hidden">
                           <div
                             className="h-full bg-orange-500 rounded-full transition-all"
                             style={{ width: `${(t.teamsJoined / t.totalSpots) * 100}%` }}
                           />
                         </div>
-                        <p className="text-[11px] text-gray-400 mt-1.5 flex items-center gap-1">
+                        <p className="text-[11px] text-muted-foreground mt-1.5 flex items-center gap-1">
                           <Calendar className="w-3 h-3" /> {t.date}
                         </p>
                       </div>
