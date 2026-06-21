@@ -204,6 +204,74 @@
   @apply glass flex items-center gap-2 rounded-[16px] px-4;
 }
 
+/* ─── Responsive Typography ─────────────────────────────── */
+@utility text-responsive-xs {
+  font-size: clamp(0.7rem, 1.5vw, 0.75rem);
+}
+@utility text-responsive-sm {
+  font-size: clamp(0.8rem, 2vw, 0.875rem);
+}
+@utility text-responsive-base {
+  font-size: clamp(0.875rem, 2.5vw, 1rem);
+}
+@utility text-responsive-lg {
+  font-size: clamp(1rem, 3vw, 1.125rem);
+}
+@utility text-responsive-xl {
+  font-size: clamp(1.125rem, 3.5vw, 1.25rem);
+}
+@utility text-responsive-2xl {
+  font-size: clamp(1.25rem, 4vw, 1.5rem);
+}
+@utility text-responsive-3xl {
+  font-size: clamp(1.5rem, 5vw, 1.875rem);
+}
+
+/* ─── Page Container (responsive max-width) ─────────────── */
+@utility page-container {
+  width: 100%;
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+@media (min-width: 640px) {
+  .page-container {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+@media (min-width: 1024px) {
+  .page-container {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+/* ─── Dark-themed page wrapper (replaces bg-white pages) ── */
+@utility page-dark {
+  min-height: 100dvh;
+  background: var(--background);
+  color: var(--foreground);
+}
+
+/* ─── Card styles (glass-based, consistent) ───────────────── */
+@utility card-base {
+  background: rgba(27, 34, 53, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 20px;
+  padding: 1.25rem;
+}
+
+/* ─── Touch-friendly button minimum sizes ─────────────────── */
+@utility touch-target {
+  min-height: 44px;
+  min-width: 44px;
+}
+
 @keyframes shimmer {
   100% {
     transform: translateX(100%);

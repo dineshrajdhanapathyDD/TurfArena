@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from 'next'
 import { Inter, Geist_Mono } from 'next/font/google'
 import './globals.css'
 import { AuthProvider } from '@/lib/auth-context'
+import { BackButton } from '@/components/back-button'
 
 const inter = Inter({ variable: '--font-inter', subsets: ['latin'] })
 const geistMono = Geist_Mono({
@@ -35,6 +36,7 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable} ${geistMono.variable} bg-background`}>
       <body className="font-sans antialiased bg-background text-foreground">
         <AuthProvider>
+          <BackButton />
           {children}
         </AuthProvider>
         {process.env.NODE_ENV === 'production' && <Analytics />}

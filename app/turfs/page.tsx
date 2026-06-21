@@ -3,9 +3,11 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useState } from 'react'
-import { motion } from 'framer-motion'
-import { ChevronDown, Search } from 'lucide-react'
-import { turfs } from '@/lib/data'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Search, Star, MapPin, X } from 'lucide-react'
+import { AppShell, PageHeader } from '@/components/app-shell'
+import { BottomNav } from '@/components/bottom-nav'
+import { turfs, formatCurrency } from '@/lib/data'
 
 export default function TurfsPage() {
   const [query, setQuery] = useState('')
@@ -16,162 +18,120 @@ export default function TurfsPage() {
   )
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* ===== HEADER SECTION ===== */}
-      {/* NAVIGATION HEADER */}
-      <header className="sticky top-0 z-50 bg-gray-900 text-white shadow-lg">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            {/* LOGO */}
-            <Link href="/home" className="text-xl font-bold">
-              TurfArena
-            </Link>
-            
-            {/* NAVIGATION MENU */}
-            <nav className="hidden md:flex items-center gap-8">
-              <Link href="/home" className="text-sm font-medium hover:text-gray-300 transition">
-                Home
-              </Link>
-              <Link href="/turfs" className="text-sm font-medium hover:text-gray-300 transition text-orange-400">
-                Book
-              </Link>
-              <Link href="/tournaments" className="text-sm font-medium hover:text-gray-300 transition">
-                Tournaments
-              </Link>
-              <Link href="/community" className="text-sm font-medium hover:text-gray-300 transition">
-                Contact
-              </Link>
-            </nav>
-            
-            {/* USER PROFILE */}
-            <div className="flex items-center gap-4">
-              <Image
-                src="/images/player-1.png"
-                alt="Profile"
-                width={32}
-                height={32}
-                className="size-8 rounded-full object-cover"
-              />
-              <button className="flex items-center gap-1 text-sm font-medium hover:text-gray-300 transition">
-                Tani <ChevronDown className="size-4" />
-              </button>
-            </div>
-          </div>
+    <AppShell>
+      <PageHeader title="Book a Turf" subtitle="Find your perfect venue" />
+
+      {/* Search */}
+      <div className="px-4 sm:px-5 pt-2">
+        <div className="glass flex items-center gap-2.5 rounded-[16px] px-4">
+          <Search className="size-4 shrink-0 text-muted-foreground" />
+          <input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search turfs by name or location..."
+            className="w-full bg-transparent py-3.5 text-sm outline-none placeholder:text-muted-foreground text-foreground"
+          />
+          <AnimatePresence>
+            {query && (
+              <motion.button
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                onClick={() => setQuery('')}
+                className="shrink-0 text-muted-foreground"
+                aria-label="Clear search"
+              >
+                <X className="size-4" />
+              </motion.button>
+            )}
+          </AnimatePresence>
         </div>
-      </header>
+      </div>
 
-      {/* ===== SEARCH SECTION ===== */}
-      {/* SEARCH AND FILTER SECTION */}
-      <section className="bg-gray-50 py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-3xl font-bold mb-6">Find Your Perfect Turf</h1>
-          
-          {/* SEARCH BAR */}
-          <div className="flex gap-4 mb-4">
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-3 text-gray-400 size-5" />
-              <input
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search turfs by name or location..."
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-400"
-              />
-            </div>
+      {/* Results count */}
+      <div className="px-4 sm:px-5 pt-3">
+        <p className="text-xs text-muted-foreground">
+          {filtered.length} turf{filtered.length !== 1 ? 's' : ''} {query ? `matching "${query}"` : 'available'}
+        </p>
+      </div>
+
+      {/* Turf list */}
+      <section className="px-4 sm:px-5 pt-4 space-y-4 pb-4">
+        {filtered.length === 0 ? (
+          <div className="flex flex-col items-center gap-3 py-16 text-center">
+            <span className="flex size-16 items-center justify-center rounded-[20px] bg-surface-2">
+              <Search className="size-7 text-muted-foreground" />
+            </span>
+            <p className="font-medium text-foreground">No turfs found</p>
+            <p className="text-sm text-muted-foreground">Try a different search term</p>
           </div>
+        ) : (
+          filtered.map((turf, idx) => (
+            <motion.div
+              key={turf.id}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: idx * 0.06 }}
+            >
+              <Link href={`/turfs/${turf.id}`}>
+                <div className="glass rounded-[20px] overflow-hidden group hover:border-primary/30 transition-colors">
+                  {/* Image */}
+                  <div className="relative h-36 sm:h-44 bg-surface-2 overflow-hidden">
+                    <Image
+                      src={turf.image || '/placeholder.jpg'}
+                      alt={turf.name}
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                    <div className="absolute top-3 right-3 bg-black/60 backdrop-blur-sm rounded-full px-2.5 py-1 flex items-center gap-1">
+                      <Star className="size-3 fill-warning text-warning" />
+                      <span className="text-white text-xs font-semibold">{turf.rating}</span>
+                    </div>
+                  </div>
 
-          {/* FILTERS */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            <select className="px-4 py-3 border border-gray-300 rounded-lg text-sm bg-white hover:border-gray-400 transition">
-              <option>📍 Location</option>
-            </select>
-            <select className="px-4 py-3 border border-gray-300 rounded-lg text-sm bg-white hover:border-gray-400 transition">
-              <option>📅 Date</option>
-            </select>
-            <select className="px-4 py-3 border border-gray-300 rounded-lg text-sm bg-white hover:border-gray-400 transition">
-              <option>⚽ Sports</option>
-            </select>
-            <select className="px-4 py-3 border border-gray-300 rounded-lg text-sm bg-white hover:border-gray-400 transition">
-              <option>🕐 Time</option>
-            </select>
-          </div>
-        </div>
-      </section>
+                  {/* Info */}
+                  <div className="p-4">
+                    <h3 className="font-bold text-foreground">{turf.name}</h3>
+                    <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
+                      <MapPin className="size-3" /> {turf.area} · {turf.distanceKm} km away
+                    </p>
 
-      {/* ===== TURFS LISTING SECTION ===== */}
-      {/* TURFS GRID */}
-      <section className="py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-8">
-            <h2 className="text-2xl font-bold">{query ? `Results for "${query}"` : 'All Available Turfs'}</h2>
-            <p className="text-gray-600 mt-2">{filtered.length} turfs found</p>
-          </div>
-
-          {filtered.length === 0 ? (
-            <div className="text-center py-12">
-              <Search className="size-12 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-600">No turfs match your search</p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filtered.map((turf, idx) => (
-                <motion.div
-                  key={turf.id}
-                  initial={{ opacity: 0, y: 12 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: idx * 0.05 }}
-                >
-                  <Link href={`/turfs/${turf.id}`}>
-                    <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow overflow-hidden cursor-pointer group">
-                      {/* TURF IMAGE */}
-                      <div className="relative h-48 bg-gray-200 overflow-hidden">
-                        <Image
-                          src={turf.image || '/placeholder.jpg'}
-                          alt={turf.name}
-                          fill
-                          className="object-cover group-hover:scale-105 transition-transform"
-                        />
-                      </div>
-                      
-                      {/* TURF INFO */}
-                      <div className="p-4">
-                        <h3 className="text-lg font-bold mb-2">{turf.name}</h3>
-                        <p className="text-sm text-gray-600 mb-3">📍 {turf.area}</p>
-                        
-                        {/* RATING AND PRICE */}
-                        <div className="flex items-center justify-between mb-4">
-                          <div className="flex items-center gap-1">
-                            <span className="text-yellow-400">⭐</span>
-                            <span className="text-sm font-semibold">{turf.rating}</span>
-                            <span className="text-xs text-gray-600">({turf.reviews})</span>
-                          </div>
-                          <span className="text-lg font-bold text-orange-600">₹{turf.pricePerHour}/hr</span>
-                        </div>
-
-                        {/* SPORTS */}
-                        <div className="flex gap-2 flex-wrap">
-                          {turf.sports.slice(0, 2).map((sport) => (
-                            <span key={sport} className="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded">
-                              {sport}
-                            </span>
-                          ))}
-                        </div>
+                    <div className="flex items-center justify-between mt-3">
+                      <span className="text-lg font-bold text-primary">
+                        {formatCurrency(turf.pricePerHour)}
+                        <span className="text-xs text-muted-foreground font-normal">/hr</span>
+                      </span>
+                      <div className="flex gap-1.5">
+                        {turf.sports.slice(0, 2).map((sport) => (
+                          <span key={sport} className="text-[10px] bg-primary/15 text-primary px-2 py-0.5 rounded-full font-medium">
+                            {sport}
+                          </span>
+                        ))}
                       </div>
                     </div>
-                  </Link>
-                </motion.div>
-              ))}
-            </div>
-          )}
-        </div>
+
+                    {/* Slots */}
+                    <div className="flex gap-2 mt-3 overflow-x-auto no-scrollbar">
+                      {turf.slots.slice(0, 3).map((slot) => (
+                        <span key={slot} className="text-[10px] bg-surface-2 text-muted-foreground px-2.5 py-1 rounded-full whitespace-nowrap">
+                          {slot}
+                        </span>
+                      ))}
+                      {turf.slots.length > 3 && (
+                        <span className="text-[10px] text-muted-foreground py-1">
+                          +{turf.slots.length - 3} more
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            </motion.div>
+          ))
+        )}
       </section>
 
-      {/* ===== FOOTER SECTION ===== */}
-      {/* FOOTER */}
-      <footer className="bg-gray-900 text-white py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <p className="text-gray-400">&copy; 2024 TurfArena. All rights reserved.</p>
-        </div>
-      </footer>
-    </div>
+      <BottomNav />
+    </AppShell>
   )
 }

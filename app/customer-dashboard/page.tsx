@@ -50,7 +50,7 @@ export default function CustomerDashboard() {
 
   return (
     <ProtectedRoute allowedRoles={['customer', 'captain']}>
-      <div className="min-h-screen w-full bg-[#f0f4ff]">
+      <div className="min-h-screen w-full bg-background">
 
         {/* ═══════════════════════════════════════════
             HERO HEADER
@@ -166,12 +166,12 @@ export default function CustomerDashboard() {
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.3 + idx * 0.05 }}
-                    className="bg-white rounded-2xl p-3 sm:p-4 shadow-sm border border-gray-100 flex flex-col items-center gap-2 hover:shadow-md transition-shadow group"
+                    className="bg-surface-2/80 backdrop-blur-sm rounded-2xl p-3 sm:p-4 border border-border flex flex-col items-center gap-2 hover:border-primary/30 transition-all group"
                   >
                     <div className={`w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br ${action.color} flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform`}>
                       <Icon className="w-5 h-5 text-white" />
                     </div>
-                    <span className="text-[11px] sm:text-xs font-medium text-gray-700 text-center leading-tight">
+                    <span className="text-[11px] sm:text-xs font-medium text-foreground/80 text-center leading-tight">
                       {action.label}
                     </span>
                   </motion.div>

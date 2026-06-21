@@ -49,7 +49,7 @@ export default function StatsPage() {
 
   return (
     <ProtectedRoute allowedRoles={['customer', 'captain']}>
-      <div className="min-h-screen w-full bg-[#f0f4ff]">
+      <div className="min-h-screen w-full bg-background">
         {/* Header */}
         <div className="bg-white border-b border-gray-200 sticky top-0 z-30">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 py-4 flex items-center gap-3">
