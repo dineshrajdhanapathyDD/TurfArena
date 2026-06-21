@@ -200,7 +200,7 @@ export default function CustomerDashboard() {
                   initial={{ opacity: 0, x: -16 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.4 + idx * 0.08 }}
-                  className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow"
+                  className="glass rounded-2xl overflow-hidden hover:border-primary/30 transition-all"
                 >
                   <div className="flex items-center">
                     <div className="relative w-24 h-20 sm:w-28 sm:h-24 flex-shrink-0">
