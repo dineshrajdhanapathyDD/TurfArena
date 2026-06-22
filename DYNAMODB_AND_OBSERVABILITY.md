@@ -10,9 +10,12 @@ TurfArena uses Amazon DynamoDB as its primary database with 9 tables, PAY_PER_RE
 
 | API Endpoint | DynamoDB Operation | Table | Purpose |
 |-------------|-------------------|-------|---------|
+| `POST /api/auth/login` | Scan (planned) | Players | Authenticate user, return session token |
+| `GET /api/auth/me` | GetItem (planned) | Players | Validate token, return user profile |
 | `GET /api/tournaments` | Query (GSI) / Scan | Tournaments | List by sport using SportStatusIndex |
 | `POST /api/tournaments` | PutItem | Tournaments | Create new tournament |
 | `PATCH /api/tournaments/:id` | UpdateItem | Tournaments | Update tournament details |
+| `DELETE /api/tournaments/:id/delete` | GetItem + DeleteItem | Tournaments | Delete tournament (prevents active deletion) |
 | `POST /api/tournaments/:id/register` | PutItem + UpdateItem | Registrations + Tournaments | Register team, increment teamsJoined |
 | `GET /api/matches` | Query (GSI) / Scan | Matches | List by tournament using TournamentIndex |
 | `POST /api/matches` | PutItem | Matches | Create match record |
@@ -23,6 +26,12 @@ TurfArena uses Amazon DynamoDB as its primary database with 9 tables, PAY_PER_RE
 | `POST /api/teams` | PutItem | Teams | Create team |
 | `GET /api/turfs` | Query (GSI) / Scan | Turfs | List by owner using OwnerIndex |
 | `POST /api/turfs/:id/book` | GetItem + PutItem | Turfs + Bookings | Verify turf, create booking |
+| `POST /api/bookings/:id/cancel` | GetItem + UpdateItem | Bookings | Cancel booking with reason |
+| `GET /api/location/nearby-turfs` | Scan + Haversine | Turfs | Find turfs within radius of GPS coordinates |
+| `POST /api/location/live` | PutItem | Leaderboards (reused) | Store player live GPS during match |
+| `GET /api/location/live` | Query | Leaderboards (reused) | Get all player positions for a match |
+| `POST /api/location/checkin` | GetItem + PutItem | Bookings | Verify player within 200m of venue |
+| `POST /api/ai/insights` | Query | PlayerStats | Generate AI performance/prediction/coach insights |
 
 ### Key DynamoDB Features Used
 
@@ -386,3 +395,156 @@ Current estimate (hackathon/demo usage):
 ├── EventBridge: $0.00 (within free tier)  
 └── Total: $0.00/month
 ```
+
+
+---
+
+## Recent Developments (Latest)
+
+### New APIs Added
+
+#### 1. Authentication API (`/api/auth/*`)
+
+```
+POST /api/auth/login
+  Body: { email: "customer@turf.com", password: "customer123" }
+  Response: { token: "ta_1719000...", user: { id, name, role }, expiresIn: 86400 }
+
+GET /api/auth/me
+  Header: Authorization: Bearer ta_1719000...
+  Response: { id, email, name, role, authenticated: true }
+```
+
+**DynamoDB involvement:** In production, login verifies against Players table (bcrypt hash). Token maps to session stored in DynamoDB.
+
+---
+
+#### 2. AI Insights Engine (`/api/ai/insights`)
+
+```
+POST /api/ai/insights
+  Body: { playerId: "p1", type: "performance" | "team_builder" | "match_prediction" | "coach" }
+```
+
+**DynamoDB involvement:** Queries `TurfArena_PlayerStats` table to fetch real stats, then generates insights:
+
+| Type | What it returns | DynamoDB Query |
+|------|----------------|---------------|
+| `performance` | Win rate, strengths, weaknesses, weekly goal | Query PlayerStats by playerId |
+| `match_prediction` | Win probability (0-1), factors, confidence | Query PlayerStats + calculate |
+| `team_builder` | Suggested formation, ideal teammates, chemistry score | Query PlayerStats |
+| `coach` | Tips with priority, next drill, estimated improvement | Query PlayerStats |
+
+**Example response (type: performance):**
+```json
+{
+  "summary": "Based on 64 matches across 2 sports, your overall win rate is 64%.",
+  "strengths": ["High win rate (64%)", "Prolific scorer (88 goals)", "Regular MVP (12 awards)"],
+  "improvements": ["Improve decision-making in tight matches"],
+  "prediction": { "nextMatchWinProbability": 0.72, "confidence": 0.72 },
+  "weeklyGoal": "Play 3 more matches this week to maintain your streak."
+}
+```
+
+---
+
+#### 3. Booking Cancellation (`/api/bookings/:id/cancel`)
+
+```
+POST /api/bookings/bk_123/cancel
+  Body: { reason: "Schedule conflict" }
+  Response: { status: "cancelled", cancelledAt: "...", reason: "Schedule conflict" }
+```
+
+**DynamoDB operations:**
+1. `GetItem` — verify booking exists and is not already cancelled
+2. `UpdateItem` — SET status = 'cancelled', cancelledAt, cancelReason
+
+---
+
+#### 4. Tournament Deletion (`/api/tournaments/:id/delete`)
+
+```
+DELETE /api/tournaments/t1/delete
+  Response: { message: "Tournament 'City Champions League' deleted" }
+  Error (409): { error: "Cannot delete active tournament" }
+```
+
+**DynamoDB operations:**
+1. `GetItem` — check tournament exists and status !== 'active'
+2. `DeleteItem` — remove from table
+
+---
+
+#### 5. Live Location APIs (`/api/location/*`)
+
+```
+GET /api/location/nearby-turfs?lat=12.93&lng=77.62&radius=5&sport=football
+  → Returns turfs within 5km, sorted by distance (Haversine formula)
+
+POST /api/location/live
+  Body: { userId: "p1", matchId: "match1", lat: 12.935, lng: 77.624, accuracy: 10 }
+  → Stores player GPS for live match tracking
+
+GET /api/location/live?matchId=match1
+  → Returns all player positions for a match
+
+POST /api/location/checkin
+  Body: { userId: "p1", matchId: "match1", lat: 12.935, lng: 77.624 }
+  → Verifies player is within 200m of venue (geofencing)
+  → Response: "Checked in at Greenfield Arena. You are 45m from the venue."
+```
+
+**DynamoDB operations:**
+- `nearby-turfs`: Scan Turfs table → apply Haversine distance filter
+- `live POST`: PutItem to Leaderboards table (reused with location partition key)
+- `live GET`: Query Leaderboards by `partitionKey = 'location#match1'`
+- `checkin`: PutItem to Bookings table with verified/unverified status
+
+---
+
+### Complete API Count: 21 Endpoints
+
+| Category | Endpoints | Operations |
+|----------|-----------|-----------|
+| **Auth** | 2 | Login, validate token |
+| **Tournaments** | 5 | List, create, get, update, delete, register |
+| **Matches** | 3 | List, create, live score update |
+| **Players** | 2 | List, per-sport stats |
+| **Teams** | 2 | List, create |
+| **Turfs** | 3 | List, get, book slot |
+| **Bookings** | 1 | Cancel booking |
+| **Location** | 4 | Nearby turfs, live tracking, check-in |
+| **AI** | 1 | Performance/prediction/coach/team-builder |
+| **Total** | **21** | Full CRUD + AI + Location |
+
+---
+
+### Full CRUD Matrix
+
+| Entity | Create | Read | Update | Delete |
+|--------|--------|------|--------|--------|
+| Players | ✅ (seed) | ✅ GET | ✅ (via stats update) | — |
+| Teams | ✅ POST | ✅ GET (+ GSI) | — | — |
+| Tournaments | ✅ POST | ✅ GET (+ GSI) | ✅ PATCH | ✅ DELETE |
+| Matches | ✅ POST | ✅ GET (+ GSI) | ✅ PATCH (score) | — |
+| Turfs | ✅ (seed) | ✅ GET (+ GSI) | — | — |
+| Bookings | ✅ POST (book) | ✅ (via user) | ✅ (cancel) | — |
+| Registrations | ✅ POST | ✅ (via tournament) | — | — |
+| PlayerStats | ✅ (seed) | ✅ Query (composite) | — | — |
+| Leaderboards | ✅ (seed + location) | ✅ Query | — | — |
+
+---
+
+### Observability for New APIs
+
+| API | Logging Pattern | Error Handling |
+|-----|----------------|---------------|
+| `/api/auth/login` | `[API Error] POST /api/auth/login:` | 400 (missing fields), 401 (wrong password) |
+| `/api/auth/me` | Validates Bearer token format | 401 (no token / invalid token) |
+| `/api/ai/insights` | `[API Error] POST /api/ai/insights:` | 400 (no playerId), 500 (DynamoDB error) |
+| `/api/bookings/:id/cancel` | `[API Error] POST /api/bookings/:id/cancel:` | 404 (not found), 409 (already cancelled) |
+| `/api/tournaments/:id/delete` | `[DynamoDB] DELETE /api/tournaments/:id:` | 404 (not found), 409 (active tournament) |
+| `/api/location/checkin` | `[API Error] POST /api/location/checkin:` | 400 (missing lat/lng) |
+| `/api/location/nearby-turfs` | `[DynamoDB] GET /api/location/nearby-turfs:` | 400 (missing params), 500 (DB error) |
+| `/api/location/live` | `[API Error] POST /api/location/live:` | 400 (missing userId/lat/lng) |
