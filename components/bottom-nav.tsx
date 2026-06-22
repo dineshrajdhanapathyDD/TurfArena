@@ -7,7 +7,7 @@ import {
   Home,
   Compass,
   Trophy,
-  Users,
+  Sparkles,
   User,
   type LucideIcon,
 } from 'lucide-react'
@@ -16,8 +16,8 @@ import { cn } from '@/lib/utils'
 const items: { href: string; label: string; icon: LucideIcon }[] = [
   { href: '/home', label: 'Home', icon: Home },
   { href: '/discover', label: 'Discover', icon: Compass },
+  { href: '/ai', label: 'AI Coach', icon: Sparkles },
   { href: '/leaderboards', label: 'Ranks', icon: Trophy },
-  { href: '/community', label: 'Community', icon: Users },
   { href: '/profile', label: 'Profile', icon: User },
 ]
 

@@ -9,6 +9,7 @@ import { Trophy, Users, MapPin, Calendar, Radio } from 'lucide-react'
 import { AppShell } from '@/components/app-shell'
 import { BackHeader } from '@/components/back-header'
 import { tournaments, playerRanks, formatCurrency } from '@/lib/data'
+import { AIInsightCard } from '@/components/ai-insight-card'
 
 const tabs = ['Overview', 'Teams', 'Fixtures', 'Leaderboard', 'Rules'] as const
 type Tab = (typeof tabs)[number]
@@ -196,6 +197,22 @@ export default function TournamentDetailPage({
             )}
           </motion.div>
         </AnimatePresence>
+      </div>
+
+      {/* AI Tournament Prediction */}
+      <div className="px-5 pt-4">
+        <AIInsightCard
+          title="AI Tournament Prediction"
+          action="predict"
+          body={{
+            tournamentData: {
+              tournamentName: t.name,
+              format: t.format,
+              teams: ['Thunder FC', 'Strikers United', 'Phoenix XI', 'Royal Kickers'],
+              sport: t.sport,
+            },
+          }}
+        />
       </div>
 
       {/* Fixed Join CTA */}

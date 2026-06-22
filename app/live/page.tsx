@@ -6,6 +6,7 @@ import { Radio, Goal, Footprints, Square, Flag, ChevronLeft, ChevronRight } from
 import { AppShell } from '@/components/app-shell'
 import { BackHeader } from '@/components/back-header'
 import { matchEvents } from '@/lib/data'
+import { AIInsightCard } from '@/components/ai-insight-card'
 
 type Sport = 'football' | 'cricket'
 
@@ -133,6 +134,25 @@ export default function LivePage() {
         <button onClick={nextMatch} className="flex size-8 items-center justify-center rounded-full bg-surface-2">
           <ChevronRight className="size-4" />
         </button>
+      </div>
+
+      {/* AI Match Commentary */}
+      <div className="px-5 pt-3">
+        <AIInsightCard
+          title="AI Match Commentary"
+          action="commentary"
+          body={{
+            matchData: {
+              homeTeam: match.homeTeam,
+              awayTeam: match.awayTeam,
+              homeScore: match.sport === 'football' ? homeGoals : runs,
+              awayScore: match.sport === 'football' ? awayGoals : awayRuns,
+              minute: match.sport === 'football' ? minute : Math.floor(overs),
+              lastEvent: 'Latest action',
+              sport: match.sport,
+            },
+          }}
+        />
       </div>
 
       {/* Sport badge */}

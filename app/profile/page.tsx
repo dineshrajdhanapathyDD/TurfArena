@@ -17,6 +17,7 @@ import {
 } from 'lucide-react'
 import { AppShell } from '@/components/app-shell'
 import { BottomNav } from '@/components/bottom-nav'
+import { AIInsightCard } from '@/components/ai-insight-card'
 
 const stats = [
   { label: 'Matches', value: 64, icon: Target, c: 'text-secondary' },
@@ -159,6 +160,23 @@ export default function ProfilePage() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* AI Coach Insights */}
+      <section className="px-5 pt-5">
+        <h3 className="section-title text-sm">AI Coach</h3>
+        <div className="space-y-3">
+          <AIInsightCard
+            title="Get Training Tips"
+            action="coach"
+            body={{ playerId: 'p1', playerName: 'Arjun Mehta' }}
+          />
+          <AIInsightCard
+            title="Weekly Performance Report"
+            action="report"
+            body={{ playerId: 'p1', playerName: 'Arjun Mehta' }}
+          />
         </div>
       </section>
 
