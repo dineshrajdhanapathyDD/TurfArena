@@ -217,18 +217,26 @@ export default function MyBookingsPage() {
 
                         <div className="flex items-center justify-between mt-4 pt-3 border-t border-border">
                           <p className="font-bold text-foreground">₹{booking.amount.toLocaleString()}</p>
-                          {booking.status === 'upcoming' && (
-                            <button className="flex items-center gap-1.5 text-red-500 hover:text-red-600 text-sm font-medium transition-colors">
-                              <X className="w-3.5 h-3.5" />
-                              Cancel
-                            </button>
-                          )}
-                          {booking.status === 'completed' && (
-                            <button className="flex items-center gap-1.5 text-green-600 hover:text-green-700 text-sm font-medium transition-colors">
-                              <RotateCcw className="w-3.5 h-3.5" />
-                              Rebook
-                            </button>
-                          )}
+                          <div className="flex items-center gap-3">
+                            {booking.status === 'upcoming' && (
+                              <>
+                                <button className="flex items-center gap-1.5 text-primary hover:text-primary/80 text-sm font-medium transition-colors">
+                                  <RotateCcw className="w-3.5 h-3.5" />
+                                  Edit
+                                </button>
+                                <button className="flex items-center gap-1.5 text-red-500 hover:text-red-600 text-sm font-medium transition-colors">
+                                  <X className="w-3.5 h-3.5" />
+                                  Cancel
+                                </button>
+                              </>
+                            )}
+                            {booking.status === 'completed' && (
+                              <button className="flex items-center gap-1.5 text-green-600 hover:text-green-700 text-sm font-medium transition-colors">
+                                <RotateCcw className="w-3.5 h-3.5" />
+                                Rebook
+                              </button>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </div>

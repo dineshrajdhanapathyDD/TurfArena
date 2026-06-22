@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Trophy, Users, TrendingUp, DollarSign, Plus, Calendar, MoreHorizontal } from 'lucide-react'
+import { Trophy, Users, TrendingUp, DollarSign, Plus, Calendar } from 'lucide-react'
 import { ProtectedRoute } from '@/components/protected-route'
 import { OrganizerLayout } from '@/components/organizer-layout'
 import { useAuth } from '@/lib/auth-context'
@@ -197,9 +197,14 @@ export default function OrganizerDashboard() {
                     <p className="text-lg font-bold text-cyan-400">₹{(tournament.prizePool / 1000).toFixed(0)}K</p>
                   </div>
 
-                  <button className="p-2 hover:bg-white/10 rounded-lg transition-colors justify-self-end">
-                    <MoreHorizontal className="w-5 h-5 text-white/60" />
-                  </button>
+                  <div className="flex flex-col gap-2 justify-self-end">
+                    <button className="px-3 py-1.5 bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 text-xs font-medium rounded-lg transition-colors">
+                      Edit
+                    </button>
+                    <button className="px-3 py-1.5 bg-red-500/20 hover:bg-red-500/30 text-red-300 text-xs font-medium rounded-lg transition-colors">
+                      Delete
+                    </button>
+                  </div>
                 </div>
               </motion.div>
             ))}

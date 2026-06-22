@@ -23,6 +23,7 @@ export default function TournamentRegisterPage({
   const [teamName, setTeamName] = useState('')
   const [selectedPlayers, setSelectedPlayers] = useState<string[]>([])
   const [captainId, setCaptainId] = useState('')
+  const [phoneNumber, setPhoneNumber] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   if (!tournament) notFound()
@@ -38,7 +39,7 @@ export default function TournamentRegisterPage({
   function canProceed(): boolean {
     switch (step) {
       case 'team':
-        return teamName.trim().length >= 3
+        return teamName.trim().length >= 3 && phoneNumber.length >= 10
       case 'players':
         return selectedPlayers.length >= 5 && captainId !== ''
       case 'review':
@@ -144,6 +145,23 @@ export default function TournamentRegisterPage({
                   {teamName.length > 0 && teamName.length < 3 && (
                     <p className="text-xs text-danger mt-1 flex items-center gap-1">
                       <AlertCircle className="size-3" /> Minimum 3 characters
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="text-sm font-medium mb-1.5 block">Contact Number</label>
+                  <input
+                    value={phoneNumber}
+                    onChange={(e) => setPhoneNumber(e.target.value.replace(/\D/g, '').slice(0, 10))}
+                    placeholder="e.g. 9876543210"
+                    type="tel"
+                    maxLength={10}
+                    className="w-full h-12 rounded-[14px] bg-surface-2 px-4 text-sm outline-none placeholder:text-muted-foreground focus:ring-2 focus:ring-primary/40"
+                  />
+                  {phoneNumber.length > 0 && phoneNumber.length < 10 && (
+                    <p className="text-xs text-danger mt-1 flex items-center gap-1">
+                      <AlertCircle className="size-3" /> Enter 10-digit phone number
                     </p>
                   )}
                 </div>

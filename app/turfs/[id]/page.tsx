@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { Star, MapPin, Phone, Mail, ChevronDown } from 'lucide-react'
 import { turfs, formatCurrency } from '@/lib/data'
+import { MapView } from '@/components/map-view'
 
 const facilities = [
   { name: 'Parking Area', icon: '🅿️' },
@@ -126,14 +127,16 @@ export default function TurfDetailPage({
             {/* Location Details Box */}
             <div className="bg-surface-2/80 rounded-lg p-4 mb-6">
               <h3 className="font-bold mb-3">Location</h3>
-              <p className="text-sm mb-3">
-                • Opposite Sri Atma College, Bengaluru<br />
-                • Near Sr. Mary's Catholic Church, C-block<br />
-                • https://maps.google.com/...
+              <p className="text-sm mb-3 text-muted-foreground">
+                {turf.area}, Bengaluru
               </p>
-              <div className="h-40 bg-gray-300 rounded mb-3 flex items-center justify-center">
-                <div className="text-muted-foreground">📍 Map View</div>
-              </div>
+              <MapView
+                center={{ lat: 12.9352, lng: 77.6245 }}
+                zoom={15}
+                markers={[{ id: turf.id, lat: 12.9352, lng: 77.6245, title: turf.name, subtitle: turf.area, type: 'turf' }]}
+                className="h-48"
+                showUserLocation={true}
+              />
             </div>
 
             {/* Rules Section */}
@@ -191,16 +194,14 @@ export default function TurfDetailPage({
                 <label className="block text-sm font-medium mb-2 flex items-center gap-2">
                   📅 Date
                 </label>
-                <select
+                <input
+                  type="date"
                   value={date || ''}
                   onChange={(e) => setDate(e.target.value)}
+                  min={new Date().toISOString().split('T')[0]}
+                  max={new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]}
                   className="w-full px-4 py-3 border border-border rounded-lg text-sm bg-surface text-foreground focus:outline-none focus:border-primary"
-                >
-                  <option value="">Select a date</option>
-                  <option value="2024-01-20">Jan 20, 2024</option>
-                  <option value="2024-01-21">Jan 21, 2024</option>
-                  <option value="2024-01-22">Jan 22, 2024</option>
-                </select>
+                />
               </div>
 
               {/* Time Selector */}
