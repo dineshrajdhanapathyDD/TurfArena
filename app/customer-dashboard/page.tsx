@@ -36,7 +36,7 @@ const quickActions = [
   { icon: MapPin, label: 'Book Turf', href: '/turfs-explore', color: 'from-green-500 to-emerald-600' },
   { icon: Trophy, label: 'Tournaments', href: '/tournaments', color: 'from-orange-500 to-red-500' },
   { icon: Calendar, label: 'My Bookings', href: '/my-bookings', color: 'from-blue-500 to-indigo-600' },
-  { icon: TrendingUp, label: 'Stats', href: '/stats', color: 'from-purple-500 to-violet-600' },
+  { icon: TrendingUp, label: 'AI Coach', href: '/ai', color: 'from-purple-500 to-violet-600' },
 ]
 
 const fadeUp = {
