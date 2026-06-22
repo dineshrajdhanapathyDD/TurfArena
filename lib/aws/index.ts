@@ -1,5 +1,18 @@
-// AWS Infrastructure exports for TurfArena
 export { AWS_ENABLED, AWS_CONFIG } from './config'
+
+export {
+  VALKEY_ENABLED,
+  getValkey,
+  lockSlot,
+  unlockSlot,
+  markSlotBooked,
+  isSlotBooked,
+  getCachedAvailability,
+  setCachedAvailability,
+  cacheLiveScore,
+  getCachedLiveScore,
+  checkRateLimit,
+} from './valkey'
 
 export {
   docClient,

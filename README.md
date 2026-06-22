@@ -50,10 +50,12 @@ TurfArena connects players, team captains, tournament organizers, and turf owner
 
 | Layer | Technology |
 |-------|-----------|
-| Frontend | Next.js 16, React 19, Tailwind CSS 4, Framer Motion |
+| Frontend | Next.js 16, React 19, Tailwind CSS 4, Framer Motion, Leaflet (OpenStreetMap) |
 | Deployment | Vercel (serverless functions) |
 | Database | Amazon DynamoDB (PAY_PER_REQUEST) |
+| Cache | AWS ElastiCache Valkey (Redis-compatible, real-time slot locking) |
 | Events | Amazon EventBridge |
+| Maps | OpenStreetMap + Leaflet (free, no API key) |
 | UI Components | shadcn/ui, Lucide React icons |
 | Auth | Role-based (4 roles: player, captain, organizer, owner) |
 
@@ -601,7 +603,8 @@ See [AWS_SETUP.md](./AWS_SETUP.md) for full details, IAM policies, and deploymen
 | POST | `/api/teams` | Create team |
 | GET | `/api/turfs` | List turfs (filter: sport, area, maxPrice) |
 | GET | `/api/turfs/:id` | Turf details |
-| POST | `/api/turfs/:id/book` | Book a slot |
+| GET | `/api/turfs/:id/availability` | Real-time slot availability (Valkey cached) |
+| POST | `/api/turfs/:id/book` | Book a slot (with Valkey lock) |
 
 ---
 
