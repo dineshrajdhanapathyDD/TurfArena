@@ -1,6 +1,16 @@
 export { AWS_ENABLED, AWS_CONFIG } from './config'
 
 export {
+  BEDROCK_ENABLED,
+  invokeBedrockModel,
+  generateCoachAdvice,
+  generateMatchCommentary,
+  generatePerformanceReport,
+  generateTournamentPrediction,
+  generateTeamStrategy,
+} from './bedrock'
+
+export {
   VALKEY_ENABLED,
   getValkey,
   lockSlot,

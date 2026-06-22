@@ -61,6 +61,46 @@ TurfArena connects players, team captains, tournament organizers, and turf owner
 
 ---
 
+## Real-Time Booking (Valkey/Redis)
+
+TurfArena uses **Valkey** (Redis-compatible cache) for real-time slot management:
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant API as Booking API
+    participant V as Valkey Cache
+    participant DB as DynamoDB
+
+    U->>API: POST /api/turfs/:id/book
+    API->>V: isSlotBooked? (instant check)
+    V-->>API: No
+    API->>V: lockSlot (5 min TTL, NX)
+    V-->>API: Lock acquired
+    API->>DB: PutItem (Bookings table)
+    DB-->>API: Success
+    API->>V: markSlotBooked (24h TTL)
+    API-->>U: 201 Booking Confirmed
+```
+
+**How it prevents double-booking:**
+- `SET key NX EX 300` — atomic lock, only one user can hold it
+- If another user tries to book the same slot simultaneously, they get `423 Locked`
+- If booking fails, lock is released automatically
+
+**Valkey operations used:**
+| Operation | Purpose | TTL |
+|-----------|---------|-----|
+| `SET ... NX EX 300` | Acquire slot lock | 5 min |
+| `SET ... EX 86400` | Mark slot as booked | 24 hours |
+| `EXISTS` | Check if slot available | — |
+| `GET` | Cached availability | 60 sec |
+| `INCR + EXPIRE` | API rate limiting | 60 sec |
+
+**Connection:** Upstash Redis (serverless, Valkey-compatible, us-east-1)
+
+---
+
 ## Architecture
 
 ### Full System Architecture
@@ -543,15 +583,16 @@ Open [http://localhost:3000](http://localhost:3000). The app uses mock data when
 ### Quick Setup
 
 ```bash
-# 1. Fill in .env.local with your AWS credentials
+# 1. Fill in .env.local with your credentials
 #    AWS_REGION=us-east-1
 #    AWS_ACCESS_KEY_ID=your-key
 #    AWS_SECRET_ACCESS_KEY=your-secret
+#    VALKEY_URL=rediss://default:xxx@your-host.upstash.io:6379
 
 # 2. Create DynamoDB tables + EventBridge bus + seed data
 npm run aws:init
 
-# 3. Start app (now connected to DynamoDB)
+# 3. Start app (now connected to DynamoDB + Valkey)
 npm run dev
 ```
 
@@ -631,6 +672,7 @@ See [AWS_SETUP.md](./AWS_SETUP.md) for full details, IAM policies, and deploymen
    - `AWS_ACCESS_KEY_ID`
    - `AWS_SECRET_ACCESS_KEY`
    - `EVENTBRIDGE_BUS_NAME` = `TurfArena-Events`
+   - `VALKEY_URL` = `rediss://default:xxx@your-host.upstash.io:6379`
 4. Deploy
 
 ---
@@ -658,7 +700,9 @@ See [AWS_SETUP.md](./AWS_SETUP.md) for full details, IAM policies, and deploymen
 |---------|------|
 | DynamoDB (PAY_PER_REQUEST) | ~$0 (free tier covers 25 RCU + 25 WCU) |
 | EventBridge | ~$0 (14M events/month free) |
+| Valkey / Upstash Redis | ~$0 (10K commands/day free) |
 | Vercel (Hobby) | Free |
+| OpenStreetMap | Free (no API key) |
 | **Total** | **Free for development and demos** |
 
 ---
