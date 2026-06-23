@@ -27,11 +27,42 @@ export default function TurfDetailPage({
   const [date, setDate] = useState<string | null>(null)
   const [time, setTime] = useState<string | null>(null)
   const [duration, setDuration] = useState<string | null>(null)
+  const [booking, setBooking] = useState<boolean>(false)
+  const [bookingResult, setBookingResult] = useState<{ success: boolean; message: string } | null>(null)
 
   if (!turf) notFound()
 
-  const timeSlots = ['6:00 AM', '7:00 AM', '8:00 AM', '9:00 AM', '10:00 AM']
+  const timeSlots = turf.slots || ['6:00 AM', '7:00 AM', '8:00 AM', '9:00 AM', '10:00 AM']
   const durationOptions = ['1 hour', '2 hours', '3 hours']
+
+  async function handleBook() {
+    if (!date || !time) return
+    setBooking(true)
+    setBookingResult(null)
+    try {
+      const res = await fetch(`/api/turfs/${id}/book`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          date,
+          slot: time,
+          sport: turf.sports?.[0] || 'football',
+          userId: 'p1',
+          userName: 'Arjun Mehta',
+        }),
+      })
+      const data = await res.json()
+      if (data.success) {
+        setBookingResult({ success: true, message: `Booked! ${turf.name} on ${date} at ${time}. Booking ID: ${data.data.bookingId}` })
+      } else {
+        setBookingResult({ success: false, message: data.error || 'Booking failed' })
+      }
+    } catch {
+      setBookingResult({ success: false, message: 'Network error. Try again.' })
+    } finally {
+      setBooking(false)
+    }
+  }
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -241,10 +272,27 @@ export default function TurfDetailPage({
               {/* Book Button */}
               <motion.button
                 whileTap={{ scale: 0.97 }}
-                className="w-full bg-green-700 hover:bg-green-800 text-white py-3 rounded-lg font-bold mb-6 transition"
+                onClick={handleBook}
+                disabled={!date || !time || booking}
+                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground py-3.5 rounded-lg font-bold mb-4 transition disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Book Turf
+                {booking ? 'Booking...' : date && time ? `Book for ${date} at ${time}` : 'Select date & time to book'}
               </motion.button>
+
+              {/* Booking Result */}
+              {bookingResult && (
+                <motion.div
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className={`p-3 rounded-lg text-sm mb-4 ${
+                    bookingResult.success
+                      ? 'bg-success/15 text-success border border-success/30'
+                      : 'bg-danger/15 text-danger border border-danger/30'
+                  }`}
+                >
+                  {bookingResult.message}
+                </motion.div>
+              )}
 
               {/* Contact Section */}
               <div className="border-t pt-6">
