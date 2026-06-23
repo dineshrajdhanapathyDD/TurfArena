@@ -3,8 +3,8 @@
 import { useRouter, usePathname } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
 
-// Only hide on splash and role-specific home pages
-const HIDE_ON = ['/', '/onboarding', '/auth']
+// Only hide on splash, auth, onboarding, and dashboard pages (they have their own nav)
+const HIDE_ON = ['/', '/onboarding', '/auth', '/home', '/customer-dashboard', '/organizer', '/owner']
 
 export function BackButton() {
   const router = useRouter()

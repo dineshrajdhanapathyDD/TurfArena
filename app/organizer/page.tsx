@@ -6,16 +6,52 @@ import { ProtectedRoute } from '@/components/protected-route'
 import { OrganizerLayout } from '@/components/organizer-layout'
 import { useAuth } from '@/lib/auth-context'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 export default function OrganizerDashboard() {
   const { user } = useAuth()
   const [selectedPeriod, setSelectedPeriod] = useState('month')
+  const [liveTournaments, setLiveTournaments] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+
+  // Fetch real tournaments from DynamoDB
+  useEffect(() => {
+    async function fetchTournaments() {
+      try {
+        const res = await fetch('/api/tournaments')
+        const data = await res.json()
+        if (data.success && data.data) {
+          setLiveTournaments(data.data)
+        }
+      } catch (e) {
+        console.error('Failed to fetch tournaments:', e)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchTournaments()
+  }, [])
+
+  const tournaments = liveTournaments.length > 0
+    ? liveTournaments.map((t: any) => ({
+        id: t.tournamentId,
+        name: t.name,
+        date: t.date || 'TBD',
+        teams: t.teamsJoined || 0,
+        totalSpots: t.totalSpots || 16,
+        prizePool: t.prizePool || 0,
+        status: t.status === 'active' ? 'Active' : t.status === 'completed' ? 'Completed' : 'Upcoming',
+        participants: (t.teamsJoined || 0) * 7,
+      }))
+    : [
+      { id: 1, name: 'City Champions League', date: 'Sat, 28 Jun', teams: 14, totalSpots: 16, prizePool: 50000, status: 'Active', participants: 125 },
+      { id: 2, name: 'Weekend Premier Cup', date: 'Sun, 29 Jun', teams: 8, totalSpots: 12, prizePool: 25000, status: 'Upcoming', participants: 68 },
+    ]
 
   const kpiCards = [
     {
       label: 'Total Tournaments',
-      value: '12',
+      value: String(tournaments.length),
       change: 3,
       icon: Trophy,
       color: 'from-purple-500 to-pink-600',
@@ -23,7 +59,7 @@ export default function OrganizerDashboard() {
     },
     {
       label: 'Active Teams',
-      value: '156',
+      value: String(tournaments.reduce((sum: number, t: any) => sum + (t.teams || 0), 0)),
       change: 12,
       icon: Users,
       color: 'from-blue-500 to-cyan-600',
@@ -31,7 +67,7 @@ export default function OrganizerDashboard() {
     },
     {
       label: 'Total Prize Pool',
-      value: '₹2.5L',
+      value: '₹' + (tournaments.reduce((sum: number, t: any) => sum + (t.prizePool || 0), 0) / 1000).toFixed(0) + 'K',
       change: 8,
       icon: DollarSign,
       color: 'from-emerald-500 to-teal-600',
@@ -44,39 +80,6 @@ export default function OrganizerDashboard() {
       icon: TrendingUp,
       color: 'from-orange-500 to-red-600',
       trend: 'up',
-    },
-  ]
-
-  const tournaments = [
-    {
-      id: 1,
-      name: 'City Champions League',
-      date: 'Sat, 28 Jun',
-      teams: 14,
-      totalSpots: 16,
-      prizePool: 50000,
-      status: 'Active',
-      participants: 125,
-    },
-    {
-      id: 2,
-      name: 'Weekend Premier Cup',
-      date: 'Sun, 29 Jun',
-      teams: 8,
-      totalSpots: 12,
-      prizePool: 25000,
-      status: 'Active',
-      participants: 68,
-    },
-    {
-      id: 3,
-      name: 'Past Finals',
-      date: 'Sat, 21 Jun',
-      teams: 16,
-      totalSpots: 16,
-      prizePool: 40000,
-      status: 'Completed',
-      participants: 156,
     },
   ]
 

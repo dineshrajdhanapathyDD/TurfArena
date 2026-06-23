@@ -1,17 +1,39 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { DollarSign, Calendar, TrendingUp, Target, Activity, MoreHorizontal, MapPin } from 'lucide-react'
+import { DollarSign, Calendar, TrendingUp, Target, Activity, MapPin, RefreshCw } from 'lucide-react'
 import { ProtectedRoute } from '@/components/protected-route'
 import { OwnerLayout } from '@/components/owner-layout'
 import { useAuth } from '@/lib/auth-context'
 import Link from 'next/link'
 import Image from 'next/image'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 export default function OwnerDashboard() {
   const { user } = useAuth()
   const [selectedPeriod, setSelectedPeriod] = useState('month')
+  const [liveBookings, setLiveBookings] = useState<any[]>([])
+  const [loadingBookings, setLoadingBookings] = useState(true)
+
+  // Fetch real bookings from DynamoDB
+  useEffect(() => {
+    async function fetchBookings() {
+      try {
+        const res = await fetch('/api/turfs/tf1/availability?date=' + new Date().toISOString().split('T')[0])
+        // Also fetch actual bookings
+        const bookRes = await fetch('/api/turfs')
+        const bookData = await bookRes.json()
+        if (bookData.success) {
+          setLiveBookings(bookData.data || [])
+        }
+      } catch (e) {
+        console.error('Failed to fetch bookings:', e)
+      } finally {
+        setLoadingBookings(false)
+      }
+    }
+    fetchBookings()
+  }, [])
 
   const kpiCards = [
     {
@@ -78,12 +100,29 @@ export default function OwnerDashboard() {
     },
   ]
 
-  const recentBookings = [
-    { id: '1', turf: 'Greenfield Arena', customer: 'Arjun Mehta', amount: 1200, time: '2 min ago' },
-    { id: '2', turf: 'Downtown Court', customer: 'Priya Sharma', amount: 900, time: '15 min ago' },
-    { id: '3', turf: 'Turf Park Central', customer: 'Rajesh Kumar', amount: 1650, time: '1 hour ago' },
-    { id: '4', turf: 'Greenfield Arena', customer: 'Neha Iyer', amount: 1200, time: '3 hours ago' },
-  ]
+  const recentBookings = liveBookings.length > 0
+    ? liveBookings.slice(0, 5).map((b: any) => ({
+        id: b.bookingId,
+        turf: b.turfName || 'Unknown Turf',
+        customer: b.userName || 'Unknown',
+        amount: b.amount || 0,
+        time: getTimeAgo(b.createdAt),
+      }))
+    : [
+        { id: '1', turf: 'Greenfield Arena', customer: 'Arjun Mehta', amount: 1200, time: '2 min ago' },
+        { id: '2', turf: 'Downtown Court', customer: 'Priya Sharma', amount: 900, time: '15 min ago' },
+        { id: '3', turf: 'Turf Park Central', customer: 'Rajesh Kumar', amount: 1650, time: '1 hour ago' },
+        { id: '4', turf: 'Greenfield Arena', customer: 'Neha Iyer', amount: 1200, time: '3 hours ago' },
+      ]
+
+  function getTimeAgo(dateStr: string) {
+    const diff = Date.now() - new Date(dateStr).getTime()
+    const mins = Math.floor(diff / 60000)
+    if (mins < 60) return `${mins} min ago`
+    const hours = Math.floor(mins / 60)
+    if (hours < 24) return `${hours} hour${hours > 1 ? 's' : ''} ago`
+    return `${Math.floor(hours / 24)} day${hours > 24 ? 's' : ''} ago`
+  }
 
   return (
     <ProtectedRoute allowedRoles={['owner']}>
