@@ -32,21 +32,25 @@ export default function OrganizerDashboard() {
     fetchTournaments()
   }, [])
 
-  const tournaments = liveTournaments.length > 0
-    ? liveTournaments.map((t: any) => ({
-        id: t.tournamentId,
-        name: t.name,
-        date: t.date || 'TBD',
-        teams: t.teamsJoined || 0,
-        totalSpots: t.totalSpots || 16,
-        prizePool: t.prizePool || 0,
-        status: t.status === 'active' ? 'Active' : t.status === 'completed' ? 'Completed' : 'Upcoming',
-        participants: (t.teamsJoined || 0) * 7,
-      }))
-    : [
-      { id: 1, name: 'City Champions League', date: 'Sat, 28 Jun', teams: 14, totalSpots: 16, prizePool: 50000, status: 'Active', participants: 125 },
-      { id: 2, name: 'Weekend Premier Cup', date: 'Sun, 29 Jun', teams: 8, totalSpots: 12, prizePool: 25000, status: 'Upcoming', participants: 68 },
-    ]
+  const tournaments = [
+    // Real tournaments from DynamoDB
+    ...liveTournaments.map((t: any) => ({
+      id: t.tournamentId,
+      name: t.name,
+      date: t.date || 'TBD',
+      teams: t.teamsJoined || 0,
+      totalSpots: t.totalSpots || 16,
+      prizePool: t.prizePool || 0,
+      status: t.status === 'active' ? 'Active' : t.status === 'completed' ? 'Completed' : 'Upcoming',
+      participants: (t.teamsJoined || 0) * 7,
+      isLive: true,
+    })),
+    // Mock data for demo (always shows if no real data)
+    ...(liveTournaments.length === 0 ? [
+      { id: 'mock1', name: 'City Champions League', date: 'Sat, 28 Jun', teams: 14, totalSpots: 16, prizePool: 50000, status: 'Active', participants: 125, isLive: false },
+      { id: 'mock2', name: 'Weekend Premier Cup', date: 'Sun, 29 Jun', teams: 8, totalSpots: 12, prizePool: 25000, status: 'Upcoming', participants: 68, isLive: false },
+    ] : []),
+  ]
 
   const kpiCards = [
     {

@@ -19,12 +19,10 @@ export default function OwnerDashboard() {
   useEffect(() => {
     async function fetchBookings() {
       try {
-        const res = await fetch('/api/turfs/tf1/availability?date=' + new Date().toISOString().split('T')[0])
-        // Also fetch actual bookings
-        const bookRes = await fetch('/api/turfs')
-        const bookData = await bookRes.json()
-        if (bookData.success) {
-          setLiveBookings(bookData.data || [])
+        const res = await fetch('/api/bookings')
+        const data = await res.json()
+        if (data.success && data.data) {
+          setLiveBookings(data.data)
         }
       } catch (e) {
         console.error('Failed to fetch bookings:', e)
@@ -100,24 +98,28 @@ export default function OwnerDashboard() {
     },
   ]
 
-  const recentBookings = liveBookings.length > 0
-    ? liveBookings.slice(0, 5).map((b: any) => ({
-        id: b.bookingId,
-        turf: b.turfName || 'Unknown Turf',
-        customer: b.userName || 'Unknown',
-        amount: b.amount || 0,
-        time: getTimeAgo(b.createdAt),
-      }))
-    : [
-        { id: '1', turf: 'Greenfield Arena', customer: 'Arjun Mehta', amount: 1200, time: '2 min ago' },
-        { id: '2', turf: 'Downtown Court', customer: 'Priya Sharma', amount: 900, time: '15 min ago' },
-        { id: '3', turf: 'Turf Park Central', customer: 'Rajesh Kumar', amount: 1650, time: '1 hour ago' },
-        { id: '4', turf: 'Greenfield Arena', customer: 'Neha Iyer', amount: 1200, time: '3 hours ago' },
-      ]
+  const recentBookings = [
+    // Real bookings from DynamoDB (if any)
+    ...liveBookings.slice(0, 3).map((b: any) => ({
+      id: b.bookingId,
+      turf: b.turfName || 'Unknown Turf',
+      customer: b.userName || 'Unknown',
+      amount: b.amount || 0,
+      time: getTimeAgo(b.createdAt),
+      isLive: true,
+    })),
+    // Mock data for demo (always shows)
+    { id: 'mock1', turf: 'Greenfield Arena', customer: 'Arjun Mehta', amount: 1200, time: '2 min ago', isLive: false },
+    { id: 'mock2', turf: 'Downtown Court', customer: 'Priya Sharma', amount: 900, time: '15 min ago', isLive: false },
+    { id: 'mock3', turf: 'Turf Park Central', customer: 'Rajesh Kumar', amount: 1650, time: '1 hour ago', isLive: false },
+    { id: 'mock4', turf: 'Greenfield Arena', customer: 'Neha Iyer', amount: 1200, time: '3 hours ago', isLive: false },
+  ]
 
   function getTimeAgo(dateStr: string) {
+    if (!dateStr) return 'just now'
     const diff = Date.now() - new Date(dateStr).getTime()
     const mins = Math.floor(diff / 60000)
+    if (mins < 1) return 'just now'
     if (mins < 60) return `${mins} min ago`
     const hours = Math.floor(mins / 60)
     if (hours < 24) return `${hours} hour${hours > 1 ? 's' : ''} ago`
@@ -239,10 +241,13 @@ export default function OwnerDashboard() {
           </div>
 
           <div className="space-y-3">
-            {recentBookings.map((booking) => (
+            {recentBookings.map((booking: any) => (
               <div key={booking.id} className="flex items-center justify-between p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-colors border border-white/10 hover:border-white/20">
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-white">{booking.turf}</p>
+                  <p className="text-sm font-medium text-white flex items-center gap-2">
+                    {booking.turf}
+                    {booking.isLive && <span className="text-[9px] bg-green-500/20 text-green-400 px-1.5 py-0.5 rounded-full font-bold">DB</span>}
+                  </p>
                   <p className="text-xs text-white/60">{booking.customer} • {booking.time}</p>
                 </div>
                 <span className="text-sm font-semibold text-emerald-400 ml-4 flex-shrink-0">+₹{booking.amount.toLocaleString()}</span>
