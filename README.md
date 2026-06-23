@@ -1,10 +1,12 @@
-# 🏟️ TurfArena – The Operating System for Local Sports Communities
+# TurfArena
 
-> Join tournaments. Track performance. Build your sports identity.
+> The Operating System for Local Sports Communities — Join tournaments. Track performance. Build your sports identity.
 
 [![Built with Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)](https://nextjs.org)
 [![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-000?logo=vercel)](https://vercel.com)
 [![Database: DynamoDB](https://img.shields.io/badge/Database-Amazon%20DynamoDB-4053D6?logo=amazondynamodb)](https://aws.amazon.com/dynamodb/)
+[![AI: Amazon Bedrock](https://img.shields.io/badge/AI-Amazon%20Bedrock-FF9900?logo=amazonaws)](https://aws.amazon.com/bedrock/)
+[![Cache: Valkey](https://img.shields.io/badge/Cache-Valkey%2FRedis-DC382D?logo=redis)](https://valkey.io/)
 [![Events: EventBridge](https://img.shields.io/badge/Events-Amazon%20EventBridge-FF9900?logo=amazonaws)](https://aws.amazon.com/eventbridge/)
 
 **Live Demo:** [turf-arena-gilt.vercel.app](https://turf-arena-gilt.vercel.app)
@@ -17,7 +19,7 @@ Across India, thousands of football, cricket, badminton, volleyball, and basketb
 
 ## Solution
 
-TurfArena connects players, team captains, tournament organizers, and turf owners in a single ecosystem — enabling tournament management, live score tracking, player profiles, rankings, analytics, and business tools for turf owners.
+TurfArena connects players, team captains, tournament organizers, and turf owners in a single ecosystem — enabling tournament management, live score tracking, player profiles, rankings, AI coaching, real-time booking, and business tools for turf owners.
 
 ---
 
@@ -38,10 +40,11 @@ TurfArena connects players, team captains, tournament organizers, and turf owner
 - **Real-Time Score Updates** – Live scoring for football (goals, cards) and cricket (runs, wickets, overs)
 - **Player Profiles** – Matches played, win rates, achievements, performance history
 - **Global Rankings** – Leaderboards for players, teams, and turfs (weekly/monthly/all-time)
-- **Match Analytics** – Sport-specific statistics with visual charts
+- **AI Coach (Amazon Bedrock)** – Match predictions, performance insights, improvement tips, team builder
+- **Real-Time Booking (Valkey)** – Slot locking prevents double-booking with atomic Redis operations
+- **Turf Booking** – Search, filter, and book turfs with live slot availability
 - **Community Feed** – Social feed for match results, achievements, highlights with likes and comments
-- **AI Coach** – Match predictions, performance insights, improvement tips
-- **Turf Booking** – Search, filter, and book turfs with slot availability
+- **Maps & Location** – OpenStreetMap + Leaflet with GPS check-in (200m geofencing)
 - **Multi-Sport Support** – Football, cricket, basketball, volleyball, badminton
 
 ---
@@ -51,10 +54,11 @@ TurfArena connects players, team captains, tournament organizers, and turf owner
 | Layer | Technology |
 |-------|-----------|
 | Frontend | Next.js 16, React 19, Tailwind CSS 4, Framer Motion, Leaflet (OpenStreetMap) |
-| Deployment | Vercel (serverless functions) |
-| Database | Amazon DynamoDB (PAY_PER_REQUEST) |
-| Cache | AWS ElastiCache Valkey (Redis-compatible, real-time slot locking) |
-| Events | Amazon EventBridge |
+| Deployment | Vercel (serverless functions + Edge CDN) |
+| Database | Amazon DynamoDB (9 tables, PAY_PER_REQUEST, 7 GSIs) |
+| Cache | Upstash Valkey/Redis (real-time slot locking) |
+| Events | Amazon EventBridge (7 event types) |
+| AI | Amazon Bedrock (Nova Micro - `us.amazon.nova-micro-v1:0`) |
 | Maps | OpenStreetMap + Leaflet (free, no API key) |
 | UI Components | shadcn/ui, Lucide React icons |
 | Auth | Role-based (4 roles: player, captain, organizer, owner) |
@@ -85,7 +89,7 @@ sequenceDiagram
 
 **How it prevents double-booking:**
 - `SET key NX EX 300` — atomic lock, only one user can hold it
-- If another user tries to book the same slot simultaneously, they get `423 Locked`
+- If another user tries the same slot simultaneously, they get `423 Locked`
 - If booking fails, lock is released automatically
 
 **Valkey operations used:**
@@ -97,7 +101,47 @@ sequenceDiagram
 | `GET` | Cached availability | 60 sec |
 | `INCR + EXPIRE` | API rate limiting | 60 sec |
 
-**Connection:** Upstash Redis (serverless, Valkey-compatible, us-east-1)
+---
+
+## AI Features (Amazon Bedrock)
+
+TurfArena integrates **Amazon Bedrock Nova Micro** for intelligent sports insights:
+
+```mermaid
+graph LR
+    subgraph Input["Data Sources"]
+        PS[(PlayerStats - DynamoDB)]
+        MH[(Match History)]
+    end
+
+    subgraph Bedrock["Amazon Bedrock"]
+        NM[Nova Micro Model]
+    end
+
+    subgraph Output["AI Outputs"]
+        CO[AI Coach - Tips]
+        PR[Match Predictions]
+        TB[Team Builder]
+        CM[Match Commentary]
+        RP[Performance Report]
+    end
+
+    PS --> NM
+    MH --> NM
+    NM --> CO
+    NM --> PR
+    NM --> TB
+    NM --> CM
+    NM --> RP
+```
+
+| Feature | What it does |
+|---------|-------------|
+| **AI Coach** | Personalized training drills with estimated improvement % |
+| **Match Prediction** | Win probability from real stats (DynamoDB PlayerStats) |
+| **Team Builder** | Optimal formations and chemistry scoring |
+| **Commentary** | Auto-generated match narrative from live events |
+| **Performance Report** | Strengths, weaknesses, weekly goals |
 
 ---
 
@@ -110,13 +154,17 @@ graph TD
     subgraph Frontend["FRONTEND - Vercel"]
         UI[Next.js 16 - React 19 SSR]
         CDN[Vercel Edge CDN]
-        MW[Auth Middleware - JWT]
+        MW[Auth Middleware - Role-based]
         AN[Vercel Analytics + Speed Insights]
     end
 
     subgraph Backend["BACKEND - API Layer"]
-        API[API Routes - 14 Serverless Functions]
-        SDK[AWS SDK v3 - DynamoDB + EventBridge]
+        API[22 Serverless API Routes]
+        SDK[AWS SDK v3 - DynamoDB + EventBridge + Bedrock]
+    end
+
+    subgraph Cache["CACHE - Valkey"]
+        VK[Upstash Redis - Slot Locking]
     end
 
     subgraph Database["DATABASE - Amazon DynamoDB"]
@@ -131,124 +179,25 @@ graph TD
         T9[(Registrations)]
     end
 
-    subgraph Events["EVENTS - Amazon EventBridge"]
-        EB[TurfArena-Events Bus]
-        R1[Tournament Alerts Rule]
-        R2[Live Score Push Rule]
-        R3[Booking Confirmation Rule]
+    subgraph AI["AI - Amazon Bedrock"]
+        BK[Nova Micro Model]
     end
 
-    subgraph Future["PLANNED - Future Enhancements"]
-        COG[Amazon Cognito - Auth]
-        S3[S3 - Image Uploads]
-        WS[API Gateway WebSocket - Real-time]
-        CF[CloudFront - Global CDN]
-        WAF[AWS WAF - Security]
-        XR[AWS X-Ray - Tracing]
-        CW[CloudWatch - Monitoring + Alarms]
+    subgraph Events["EVENTS - Amazon EventBridge"]
+        EB[TurfArena-Events Bus]
+        R1[Tournament Alerts]
+        R2[Live Score Push]
+        R3[Booking Confirmation]
     end
 
     UI -->|HTTPS + TLS 1.3| CDN
     CDN -->|Static Assets| UI
     UI -->|Internal Calls| API
-    API -->|Read/Write| T1
-    API -->|Read/Write| T2
-    API -->|Read/Write| T3
-    API -->|Read/Write| T4
-    API -->|Read/Write| T5
-    API -->|Read/Write| T6
-    API -->|Read/Write| T7
-    API -->|Read/Write| T8
-    API -->|Read/Write| T9
+    API -->|Read/Write| T1 & T2 & T3 & T4 & T5 & T6 & T7 & T8 & T9
+    API -->|Lock/Cache| VK
+    API -->|InvokeModel| BK
     API -->|PutEvents| EB
-    EB --> R1
-    EB --> R2
-    EB --> R3
-```
-
-### API Connection Map
-
-```mermaid
-graph LR
-    subgraph Client["Client - Browser"]
-        C1[Tournaments UI]
-        C2[Live Match UI]
-        C3[Turf Booking UI]
-        C4[Player Profile UI]
-        C5[Leaderboards UI]
-    end
-
-    subgraph APIs["API Routes - /api/*"]
-        A1["/api/tournaments"]
-        A2["/api/matches"]
-        A3["/api/turfs"]
-        A4["/api/players"]
-        A5["/api/teams"]
-    end
-
-    subgraph DDB["DynamoDB Tables"]
-        D1[(Tournaments)]
-        D2[(Matches)]
-        D3[(Turfs + Bookings)]
-        D4[(Players + Stats)]
-        D5[(Teams + Registrations)]
-    end
-
-    C1 --> A1
-    C2 --> A2
-    C3 --> A3
-    C4 --> A4
-    C5 --> A5
-
-    A1 --> D1
-    A2 --> D2
-    A3 --> D3
-    A4 --> D4
-    A5 --> D5
-```
-
-### Well-Architected Design
-
-| Pillar | Current Implementation | Planned Enhancement |
-|--------|----------------------|---------------------|
-| **Operational Excellence** | Vercel Analytics, structured API error handling, `AWS_ENABLED` feature flag for graceful degradation | AWS X-Ray tracing, CloudWatch Alarms, automated rollback |
-| **Security** | HTTPS/TLS 1.3, role-based auth (4 roles), env vars in Vercel (never in code), input validation on all endpoints | Amazon Cognito (OIDC), AWS WAF, API rate limiting, DynamoDB encryption at rest |
-| **Reliability** | Serverless auto-scaling (Vercel + DynamoDB on-demand), multi-AZ DynamoDB, EventBridge retry policies | DynamoDB Global Tables (multi-region), Circuit breaker pattern, health check endpoint |
-| **Performance** | Vercel Edge CDN, DynamoDB single-digit ms latency, PAY_PER_REQUEST auto-scaling, Next.js SSR + static generation | DynamoDB DAX (caching), API Gateway WebSocket for live scores, CloudFront for images |
-| **Cost Optimization** | PAY_PER_REQUEST (no idle cost), Vercel Hobby (free), EventBridge free tier (14M events), no provisioned capacity | Reserved capacity for production, S3 lifecycle policies, Lambda@Edge for compute |
-| **Sustainability** | Serverless (no always-on servers), on-demand compute only when users are active | Right-size DynamoDB indexes, archive old match data to S3 Glacier |
-
-### Security Architecture
-
-```mermaid
-graph TD
-    subgraph Client
-        BR[Browser]
-    end
-
-    subgraph Edge["Security Layer"]
-        TLS[TLS 1.3 Encryption]
-        AUTH[Role-based Auth Check]
-        VAL[Input Validation]
-    end
-
-    subgraph Compute["Serverless - No Server to Patch"]
-        FN[Vercel Functions - Auto-scale]
-    end
-
-    subgraph Data["Data Layer"]
-        ENV[Env Vars - Encrypted at Rest]
-        DDB[DynamoDB - Encryption at Rest]
-        EB2[EventBridge - IAM Scoped]
-    end
-
-    BR -->|HTTPS Only| TLS
-    TLS --> AUTH
-    AUTH -->|Allowed Roles| VAL
-    VAL -->|Sanitized Input| FN
-    FN -->|IAM Credentials| DDB
-    FN -->|IAM Credentials| EB2
-    ENV -.->|Injected at Build| FN
+    EB --> R1 & R2 & R3
 ```
 
 ### Event-Driven Architecture
@@ -275,17 +224,8 @@ graph LR
         C9[Lambda - Analytics Aggregation]
     end
 
-    P1 --> EB3
-    P2 --> EB3
-    P3 --> EB3
-    P4 --> EB3
-    P5 --> EB3
-    P6 --> EB3
-
-    EB3 --> C6
-    EB3 --> C7
-    EB3 --> C8
-    EB3 --> C9
+    P1 & P2 & P3 & P4 & P5 & P6 --> EB3
+    EB3 --> C6 & C7 & C8 & C9
 ```
 
 ### Tournament Flow
@@ -320,7 +260,7 @@ sequenceDiagram
         EB-->>P: Live Score Push
     end
 
-    O->>App: PATCH /api/matches/:id/score
+    O->>App: PATCH /api/matches/:id/score (final)
     App->>DB: Store Final Results
     App->>EB: match.completed
     EB-->>P: Match Result Notification
@@ -362,7 +302,7 @@ erDiagram
     }
     PLAYER_STATS {
         string playerId PK
-        string sport
+        string sport SK
         int matchesPlayed
         int wins
         int mvpAwards
@@ -397,7 +337,7 @@ graph TD
         PB --> PC[Register Tournament]
         PC --> PD[Play Matches]
         PD --> PE[View Stats]
-        PE --> PF[AI Insights]
+        PE --> PF[AI Coach Insights]
     end
 ```
 
@@ -407,7 +347,7 @@ graph TD
         OA[Create Tournament] --> OB[Set Rules]
         OB --> OC[Open Registration]
         OC --> OD[Generate Brackets]
-        OD --> OE[Manage Scores]
+        OD --> OE[Manage Live Scores]
         OE --> OF[Publish Results]
     end
 ```
@@ -415,135 +355,108 @@ graph TD
 ```mermaid
 graph TD
     subgraph Owner
-        TA[Register Turf] --> TB[Set Slots]
-        TB --> TC[Receive Bookings]
+        TA[Register Turf] --> TB[Set Slots and Prices]
+        TB --> TC[Receive Bookings via Valkey]
         TC --> TD[Host Events]
         TD --> TE[Track Revenue]
     end
 ```
 
-### Feature Overview
+### Well-Architected Design
 
-```mermaid
-graph TD
-    TA((TurfArena)) --> TM[Tournament Management]
-    TA --> LS[Live Scoring]
-    TA --> PS[Player System]
-    TA --> RK[Rankings]
-    TA --> AI[AI Features]
-    TA --> TB[Turf Booking]
-    TA --> CM[Community]
-
-    TM --> TM1[Knockout / League / Group]
-    TM --> TM2[Auto Brackets]
-    TM --> TM3[Team Registration]
-
-    LS --> LS1[Football - Goals Cards]
-    LS --> LS2[Cricket - Runs Wickets]
-    LS --> LS3[Match Events Timeline]
-
-    PS --> PS1[Profiles and Stats]
-    PS --> PS2[Achievements]
-    PS --> PS3[Performance Charts]
-
-    RK --> RK1[Weekly / Monthly / All-Time]
-    RK --> RK2[City Rankings]
-
-    AI --> AI1[Match Predictions]
-    AI --> AI2[Performance Coach]
-    AI --> AI3[Team Builder]
-
-    TB --> TB1[Search and Filter]
-    TB --> TB2[Slot Availability]
-    TB --> TB3[Reviews and Ratings]
-
-    CM --> CM1[Social Feed]
-    CM --> CM2[Likes and Comments]
-```
-
-### Draw.io Diagrams
-
-For detailed editable diagrams, open in [draw.io](https://app.diagrams.net):
-
-- [`docs/architecture.drawio`](./docs/architecture.drawio) — **Well-Architected System Architecture** showing Frontend, Backend APIs, Database, Events, Security layer, Observability, and Planned enhancements mapped to all 6 AWS Well-Architected pillars
-- [`docs/tournament-flow.drawio`](./docs/tournament-flow.drawio) — Tournament lifecycle sequence diagram
+| Pillar | Current Implementation | Planned Enhancement |
+|--------|----------------------|---------------------|
+| **Operational Excellence** | Vercel Analytics, structured logging, `AWS_ENABLED` feature flag, graceful degradation | AWS X-Ray tracing, CloudWatch Alarms |
+| **Security** | HTTPS/TLS 1.3, RBAC (4 roles), encrypted env vars, input validation, IAM least privilege | Amazon Cognito, AWS WAF, rate limiting |
+| **Reliability** | Serverless auto-scaling, multi-AZ DynamoDB, EventBridge retry, dual-mode fallback | DynamoDB Global Tables, circuit breaker |
+| **Performance** | Edge CDN, DynamoDB <5ms latency, Valkey caching, SSR + static generation | DynamoDB DAX, WebSocket live scores |
+| **Cost Optimization** | PAY_PER_REQUEST (no idle cost), Vercel Hobby (free), free tier coverage | Reserved capacity for production |
+| **Sustainability** | Serverless (no always-on servers), on-demand compute only | Archive old data to S3 Glacier |
 
 ---
 
-## 📁 Repository Structure
+## Repository Structure
 
 ```
-.
-├── app/                              # Next.js App Router
+TurfArena/
+├── app/                              # Next.js App Router (44 pages)
 │   ├── page.tsx                      # Splash / landing page
-│   ├── layout.tsx                    # Root layout with AuthProvider + BackButton
-│   ├── globals.css                   # Tailwind + CSS variables + utilities
-│   ├── auth/                         # Login page
-│   ├── onboarding/                   # 3-step onboarding wizard
-│   ├── home/                         # Role-based redirect hub
+│   ├── layout.tsx                    # Root layout + Auth + BackButton
+│   ├── globals.css                   # Tailwind + dark theme CSS vars
+│   ├── ai/                           # AI Coach chat page
+│   ├── auth/                         # Login page (4 roles)
+│   ├── community/                    # Social feed
 │   ├── customer-dashboard/           # Player dashboard
-│   ├── discover/                     # Tournament discovery + sport filters
-│   ├── community/                    # Social feed (posts, likes, comments)
-│   ├── leaderboards/                 # Rankings with podium view
-│   ├── live/                         # Live match center (football + cricket)
-│   ├── ai/                           # AI Coach chat + match predictions
-│   ├── profile/                      # Player profile + achievements
-│   ├── stats/                        # Player statistics + charts
-│   ├── team/                         # Team management + formation
-│   ├── tournaments/                  # Tournament listing + detail
-│   │   └── [id]/
-│   │       ├── page.tsx              # Tournament detail (tabs)
-│   │       └── register/             # Team registration wizard
-│   ├── turfs/                        # Turf listing + detail
-│   │   └── [id]/                     # Turf detail + booking
-│   ├── turfs-explore/                # Turf search (customer)
+│   ├── discover/                     # Tournament discovery
+│   ├── home/                         # Role-based redirect
+│   ├── leaderboards/                 # Rankings with podium
+│   ├── live/                         # Live match center
 │   ├── my-bookings/                  # User's bookings
 │   ├── notifications/                # Notification center
+│   ├── onboarding/                   # 3-step onboarding
+│   ├── organizer/                    # Organizer dashboard
+│   ├── owner/                        # Turf owner dashboard
+│   ├── profile/                      # Player profile
 │   ├── settings/                     # User settings
-│   ├── organizer/                    # Organizer dashboard + sub-pages
-│   ├── owner/                        # Turf owner dashboard + sub-pages
-│   └── api/                          # REST API endpoints
-│       ├── tournaments/              # CRUD + register
+│   ├── stats/                        # Player statistics
+│   ├── team/                         # Team management
+│   ├── tournaments/                  # Tournaments + [id] detail
+│   ├── turfs/                        # Turfs + [id] detail + booking
+│   ├── turfs-explore/                # Turf search
+│   └── api/                          # 22 REST API endpoints
+│       ├── ai/                       # AI coach, insights
+│       ├── auth/                     # Login, session validation
+│       ├── bookings/                 # List, cancel
+│       ├── location/                 # Nearby, live GPS, check-in
 │       ├── matches/                  # CRUD + live score
 │       ├── players/                  # List + stats
 │       ├── teams/                    # CRUD
-│       └── turfs/                    # List + book
+│       ├── tournaments/              # CRUD + register + delete
+│       └── turfs/                    # List + book + availability
 ├── components/                       # Shared UI components
+│   ├── ai-insight-card.tsx           # AI insight embed cards
 │   ├── app-shell.tsx                 # Responsive page wrapper
 │   ├── back-button.tsx               # Global back navigation
-│   ├── bottom-nav.tsx                # Mobile bottom navigation
+│   ├── bottom-nav.tsx                # Mobile bottom nav (AI Coach)
+│   ├── map-view.tsx                  # Leaflet map component
 │   ├── sidebar.tsx                   # Role-based sidebar
-│   └── ...                           # Cards, layouts, etc.
+│   └── ui/                           # shadcn/ui components
 ├── lib/                              # Utilities + services
-│   ├── data.ts                       # Mock data + types
 │   ├── auth-context.tsx              # Auth provider (4 roles)
+│   ├── data.ts                       # Mock data + types
 │   ├── utils.ts                      # Tailwind helper
 │   └── aws/                          # AWS service layer
-│       ├── config.ts                 # AWS_ENABLED flag
-│       ├── dynamodb.ts               # DynamoDB client + CRUD
+│       ├── bedrock.ts                # Amazon Bedrock AI client
+│       ├── config.ts                 # AWS_ENABLED feature flag
+│       ├── dynamodb.ts               # DynamoDB CRUD helpers
 │       ├── eventbridge.ts            # Event publisher
-│       └── tables.ts                 # Table schemas + types
+│       ├── tables.ts                 # Table schemas + types
+│       ├── valkey.ts                 # Valkey/Redis slot locking
+│       └── index.ts                  # Barrel export
 ├── scripts/                          # Infrastructure scripts
 │   ├── setup-aws.ts                  # Creates DynamoDB tables + EventBridge
-│   └── seed-aws.ts                   # Seeds demo data
-├── docs/                             # Editable diagrams
-│   ├── architecture.drawio           # System architecture
-│   └── tournament-flow.drawio        # Tournament flow
+│   ├── seed-aws.ts                   # Seeds demo data
+│   └── test-bedrock.ts              # Test Bedrock AI connection
+├── docs/                             # Documentation
+│   ├── ABOUT_PROJECT.md              # Hackathon story + screenshots
+│   ├── AWS_SETUP.md                  # AWS integration guide
+│   ├── DYNAMODB_AND_OBSERVABILITY.md # DB operations + monitoring
+│   ├── PERFORMANCE_OPTIMIZATIONS.md  # Performance tuning
+│   ├── TROUBLESHOOTING.md            # Common issues + fixes
+│   ├── architecture.drawio           # System architecture (editable)
+│   ├── tournament-flow.drawio        # Tournament lifecycle
+│   └── screenshots/                  # UI screenshots
 ├── public/                           # Static assets + images
 ├── .env.example                      # Environment variable template
-├── .gitignore                        # Git ignore rules
 ├── vercel.json                       # Vercel build configuration
-├── AWS_SETUP.md                      # AWS integration guide
-├── TROUBLESHOOTING.md                # Common issues + solutions
-├── next.config.mjs                   # Next.js config
-├── tsconfig.json                     # TypeScript config
 ├── package.json                      # Dependencies + scripts
+├── tsconfig.json                     # TypeScript config
 └── README.md                         # This file
 ```
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -578,21 +491,21 @@ Open [http://localhost:3000](http://localhost:3000). The app uses mock data when
 
 ---
 
-## ☁️ AWS Integration
+## AWS Integration
 
 ### Quick Setup
 
 ```bash
-# 1. Fill in .env.local with your credentials
+# 1. Configure credentials in .env.local
 #    AWS_REGION=us-east-1
 #    AWS_ACCESS_KEY_ID=your-key
 #    AWS_SECRET_ACCESS_KEY=your-secret
 #    VALKEY_URL=rediss://default:xxx@your-host.upstash.io:6379
 
-# 2. Create DynamoDB tables + EventBridge bus + seed data
+# 2. Create all AWS resources + seed demo data
 npm run aws:init
 
-# 3. Start app (now connected to DynamoDB + Valkey)
+# 3. Start app (connected to DynamoDB + Valkey + Bedrock)
 npm run dev
 ```
 
@@ -622,18 +535,21 @@ npm run dev
 | `booking.confirmed` | Turf slot booked |
 | `player.achievement` | Achievement unlocked |
 
-See [AWS_SETUP.md](./AWS_SETUP.md) for full details, IAM policies, and deployment steps.
+For full details, IAM policies, and deployment steps, see [docs/AWS_SETUP.md](./docs/AWS_SETUP.md).
 
 ---
 
-## API Endpoints
+## API Endpoints (22)
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
+| POST | `/api/auth/login` | Authenticate user |
+| GET | `/api/auth/me` | Validate session token |
 | GET | `/api/tournaments` | List tournaments (filter: sport, city, status) |
 | POST | `/api/tournaments` | Create tournament |
 | GET | `/api/tournaments/:id` | Tournament details |
 | PATCH | `/api/tournaments/:id` | Update tournament |
+| DELETE | `/api/tournaments/:id/delete` | Delete tournament |
 | POST | `/api/tournaments/:id/register` | Register team |
 | GET | `/api/matches` | List matches (filter: status, tournamentId) |
 | POST | `/api/matches` | Create match |
@@ -643,9 +559,12 @@ See [AWS_SETUP.md](./AWS_SETUP.md) for full details, IAM policies, and deploymen
 | GET | `/api/teams` | List teams (filter: captainId, sport) |
 | POST | `/api/teams` | Create team |
 | GET | `/api/turfs` | List turfs (filter: sport, area, maxPrice) |
-| GET | `/api/turfs/:id` | Turf details |
-| GET | `/api/turfs/:id/availability` | Real-time slot availability (Valkey cached) |
-| POST | `/api/turfs/:id/book` | Book a slot (with Valkey lock) |
+| GET | `/api/turfs/:id/availability` | Real-time slot availability (Valkey) |
+| POST | `/api/turfs/:id/book` | Book a slot (Valkey lock) |
+| POST | `/api/bookings/:id/cancel` | Cancel booking |
+| GET | `/api/location/nearby-turfs` | Find turfs by GPS radius |
+| POST | `/api/location/live` | Store live player GPS |
+| POST | `/api/ai/coach` | AI coaching insights (Bedrock) |
 
 ---
 
@@ -654,7 +573,7 @@ See [AWS_SETUP.md](./AWS_SETUP.md) for full details, IAM policies, and deploymen
 | Command | Description |
 |---------|-------------|
 | `npm run dev` | Start development server |
-| `npm run build` | Production build |
+| `npm run build` | Production build (webpack) |
 | `npm run start` | Start production server |
 | `npm run lint` | Run ESLint |
 | `npm run aws:setup` | Create DynamoDB tables + EventBridge bus |
@@ -667,30 +586,14 @@ See [AWS_SETUP.md](./AWS_SETUP.md) for full details, IAM policies, and deploymen
 
 1. Push to GitHub
 2. Import repo in [Vercel](https://vercel.com)
-3. Add environment variables:
+3. Set Framework Preset to **Next.js**
+4. Add environment variables:
    - `AWS_REGION` = `us-east-1`
    - `AWS_ACCESS_KEY_ID`
    - `AWS_SECRET_ACCESS_KEY`
    - `EVENTBRIDGE_BUS_NAME` = `TurfArena-Events`
    - `VALKEY_URL` = `rediss://default:xxx@your-host.upstash.io:6379`
-4. Deploy
-
----
-
-## Monetization
-
-- Premium Player Profiles with advanced analytics and AI-generated performance reports
-- Subscription plans for turf owners
-- Pay-per-tournament tools for organizers
-
----
-
-## AI Features
-
-- **AI Match Insights** – Post-match analysis and key moments
-- **AI Team Builder** – Suggest optimal team compositions
-- **AI Tournament Predictor** – Predict outcomes based on team stats
-- **AI Performance Coach** – Personalized improvement tips
+5. Deploy
 
 ---
 
@@ -698,15 +601,32 @@ See [AWS_SETUP.md](./AWS_SETUP.md) for full details, IAM policies, and deploymen
 
 | Service | Cost |
 |---------|------|
-| DynamoDB (PAY_PER_REQUEST) | ~$0 (free tier covers 25 RCU + 25 WCU) |
+| DynamoDB (PAY_PER_REQUEST) | ~$0 (free tier: 25 RCU + 25 WCU) |
 | EventBridge | ~$0 (14M events/month free) |
 | Valkey / Upstash Redis | ~$0 (10K commands/day free) |
+| Amazon Bedrock (Nova Micro) | ~$0.01 per 1K tokens |
 | Vercel (Hobby) | Free |
 | OpenStreetMap | Free (no API key) |
 | **Total** | **Free for development and demos** |
 
 ---
 
+## Documentation
+
+| Document | Description |
+|----------|-------------|
+| [About the Project](./docs/ABOUT_PROJECT.md) | Hackathon story, inspiration, challenges, accomplishments |
+| [Feature Showcase](./docs/FEATURE_SHOWCASE.md) | Complete feature walkthrough with screenshot references |
+| [AWS Setup Guide](./docs/AWS_SETUP.md) | DynamoDB + EventBridge integration walkthrough |
+| [Setup Guide](./docs/SETUP_GUIDE.md) | Quick start local development guide |
+| [DynamoDB & Observability](./docs/DYNAMODB_AND_OBSERVABILITY.md) | Database operations, CloudWatch metrics, monitoring |
+| [Performance Optimizations](./docs/PERFORMANCE_OPTIMIZATIONS.md) | Bundle optimization, caching, build improvements |
+| [Troubleshooting](./docs/TROUBLESHOOTING.md) | Common issues and solutions |
+| [Architecture Diagram](./docs/architecture.drawio) | Editable draw.io system architecture |
+| [Tournament Flow](./docs/tournament-flow.drawio) | Tournament + booking + AI flow diagram |
+
+---
+
 ## License
 
-MIT — see [LICENSE](./LICENSE)
+MIT
