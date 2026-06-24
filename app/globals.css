@@ -295,3 +295,34 @@
   );
   animation: shimmer 1.5s infinite;
 }
+
+/* ─── Desktop Layout Enhancements ─────────────────────────── */
+@media (min-width: 768px) {
+  .glass {
+    background: rgba(27, 34, 53, 0.5);
+  }
+}
+
+/* Better scrollbar on desktop */
+@media (min-width: 1024px) {
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+}
+
+/* ─── Mobile-first safe areas ─────────────────────────────── */
+@supports (padding: max(0px)) {
+  .pb-safe {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+}

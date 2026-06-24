@@ -1,19 +1,83 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Search, SlidersHorizontal, X } from 'lucide-react'
+import { Search, SlidersHorizontal, X, Loader2 } from 'lucide-react'
 import { AppShell, PageHeader } from '@/components/app-shell'
 import { BottomNav } from '@/components/bottom-nav'
 import { TournamentCard } from '@/components/cards/tournament-card'
 import { SportIcon } from '@/components/sport-icon'
-import { tournaments, SPORTS, type SportKey } from '@/lib/data'
+import { tournaments as mockTournaments, SPORTS, type SportKey } from '@/lib/data'
+
+interface TournamentItem {
+  id: string
+  name: string
+  sport: SportKey
+  image: string
+  date: string
+  venue: string
+  city: string
+  prizePool: number
+  entryFee: number
+  teamsJoined: number
+  totalSpots: number
+  trending?: boolean
+  featured?: boolean
+  format: string
+  startTimestamp: number
+  isLive?: boolean
+}
 
 export default function DiscoverPage() {
   const [query, setQuery] = useState('')
   const [sport, setSport] = useState<SportKey | 'all'>('all')
+  const [allTournaments, setAllTournaments] = useState<TournamentItem[]>([])
+  const [loading, setLoading] = useState(true)
 
-  const filtered = tournaments.filter((t) => {
+  // Fetch tournaments from API (DynamoDB + mock fallback)
+  useEffect(() => {
+    async function fetchTournaments() {
+      try {
+        const res = await fetch('/api/tournaments')
+        const data = await res.json()
+        if (data.success && data.data && data.data.length > 0) {
+          const apiItems: TournamentItem[] = data.data.map((t: any) => ({
+            id: t.tournamentId || t.id,
+            name: t.name,
+            sport: (t.sport || 'football') as SportKey,
+            image: t.image || '/images/tournament-banner.png',
+            date: t.date || 'TBD',
+            venue: t.venue || 'TBD',
+            city: t.city || '',
+            prizePool: t.prizePool || 0,
+            entryFee: t.entryFee || 0,
+            teamsJoined: t.teamsJoined || 0,
+            totalSpots: t.totalSpots || 16,
+            trending: t.trending || false,
+            featured: t.featured || false,
+            format: t.format || 'Knockout',
+            startTimestamp: t.startTimestamp || Date.now(),
+            isLive: true,
+          }))
+          // Merge with mock data that doesn't overlap
+          const realIds = new Set(apiItems.map(t => t.id))
+          const mockFiltered = mockTournaments
+            .filter(m => !realIds.has(m.id))
+            .map(m => ({ ...m, isLive: false }))
+          setAllTournaments([...apiItems, ...mockFiltered])
+        } else {
+          setAllTournaments(mockTournaments.map(m => ({ ...m, isLive: false })))
+        }
+      } catch {
+        setAllTournaments(mockTournaments.map(m => ({ ...m, isLive: false })))
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchTournaments()
+  }, [])
+
+  const filtered = allTournaments.filter((t) => {
     const matchSport = sport === 'all' || t.sport === sport
     const matchQuery =
       t.name.toLowerCase().includes(query.toLowerCase()) ||
@@ -43,7 +107,7 @@ export default function DiscoverPage() {
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search tournaments, cities…"
+            placeholder="Search tournaments, cities..."
             className="w-full bg-transparent py-3.5 text-sm outline-none placeholder:text-muted-foreground"
           />
           <AnimatePresence>
@@ -84,44 +148,56 @@ export default function DiscoverPage() {
       </div>
 
       {/* Results count */}
-      {(query || sport !== 'all') && (
-        <div className="px-5 pt-3">
-          <p className="text-xs text-muted-foreground">
-            {filtered.length} tournament{filtered.length !== 1 ? 's' : ''} found
-          </p>
-        </div>
-      )}
-
-      <section className="space-y-3 px-5 pt-4 pb-4">
-        <AnimatePresence mode="popLayout">
-          {filtered.length === 0 ? (
-            <motion.div
-              key="empty"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="flex flex-col items-center gap-3 py-16 text-center"
-            >
-              <span className="flex size-16 items-center justify-center rounded-[20px] bg-surface-2">
-                <Search className="size-7 text-muted-foreground" />
-              </span>
-              <p className="font-medium">No tournaments found</p>
-              <p className="text-sm text-muted-foreground">Try a different sport or search term</p>
-            </motion.div>
-          ) : (
-            filtered.map((t, i) => (
-              <motion.div
-                key={t.id}
-                layout
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.96 }}
-                transition={{ delay: i * 0.05 }}
-              >
-                <TournamentCard t={t} />
-              </motion.div>
-            ))
+      <div className="px-5 pt-3 flex items-center justify-between">
+        <p className="text-xs text-muted-foreground">
+          {filtered.length} tournament{filtered.length !== 1 ? 's' : ''} found
+          {filtered.filter(t => t.isLive).length > 0 && (
+            <span className="ml-1 text-emerald-400">
+              ({filtered.filter(t => t.isLive).length} from DB)
+            </span>
           )}
-        </AnimatePresence>
+        </p>
+      </div>
+
+      <section className="px-5 pt-4 pb-24">
+        {loading ? (
+          <div className="flex flex-col items-center justify-center py-16 gap-3">
+            <Loader2 className="size-8 animate-spin text-primary" />
+            <p className="text-sm text-muted-foreground">Loading tournaments...</p>
+          </div>
+        ) : (
+          <AnimatePresence mode="popLayout">
+            {filtered.length === 0 ? (
+              <motion.div
+                key="empty"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="flex flex-col items-center gap-3 py-16 text-center"
+              >
+                <span className="flex size-16 items-center justify-center rounded-[20px] bg-surface-2">
+                  <Search className="size-7 text-muted-foreground" />
+                </span>
+                <p className="font-medium">No tournaments found</p>
+                <p className="text-sm text-muted-foreground">Try a different sport or search term</p>
+              </motion.div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {filtered.map((t, i) => (
+                  <motion.div
+                    key={t.id}
+                    layout
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.96 }}
+                    transition={{ delay: i * 0.05 }}
+                  >
+                    <TournamentCard t={t} />
+                  </motion.div>
+                ))}
+              </div>
+            )}
+          </AnimatePresence>
+        )}
       </section>
 
       <BottomNav />

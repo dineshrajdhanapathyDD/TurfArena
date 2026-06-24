@@ -25,7 +25,7 @@ export function BottomNav() {
   const pathname = usePathname()
 
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-50 mx-auto max-w-md sm:max-w-lg md:max-w-2xl lg:max-w-4xl px-3 sm:px-4 pb-3 sm:pb-4">
+    <nav className="fixed inset-x-0 bottom-0 z-50 mx-auto max-w-md sm:max-w-lg md:max-w-3xl lg:max-w-5xl xl:max-w-6xl px-3 sm:px-4 pb-3 sm:pb-4">
       <div className="glass-strong shadow-soft flex items-center justify-around rounded-[24px] sm:rounded-[28px] px-1 sm:px-2 py-2 sm:py-2.5">
         {items.map((item) => {
           const active =

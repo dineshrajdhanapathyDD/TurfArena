@@ -17,7 +17,7 @@ export function AppShell({
   return (
     <div className={cn(
       'relative mx-auto min-h-dvh w-full bg-background',
-      fullWidth ? 'max-w-full' : 'max-w-md sm:max-w-lg md:max-w-2xl lg:max-w-4xl'
+      fullWidth ? 'max-w-full' : 'max-w-md sm:max-w-lg md:max-w-3xl lg:max-w-5xl xl:max-w-6xl'
     )}>
       {/* ambient glow */}
       <div className="pointer-events-none fixed inset-0 mx-auto max-w-4xl overflow-hidden">

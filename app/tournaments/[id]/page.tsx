@@ -1,18 +1,35 @@
 'use client'
 
-import { use, useState } from 'react'
+import { use, useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { notFound } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Trophy, Users, MapPin, Calendar, Radio } from 'lucide-react'
+import { Trophy, Users, MapPin, Calendar, Radio, Loader2, CheckCircle2, AlertCircle } from 'lucide-react'
 import { AppShell } from '@/components/app-shell'
 import { BackHeader } from '@/components/back-header'
-import { tournaments, playerRanks, formatCurrency } from '@/lib/data'
+import { tournaments as mockTournaments, playerRanks, formatCurrency } from '@/lib/data'
 import { AIInsightCard } from '@/components/ai-insight-card'
+import { useAuth } from '@/lib/auth-context'
 
 const tabs = ['Overview', 'Teams', 'Fixtures', 'Leaderboard', 'Rules'] as const
 type Tab = (typeof tabs)[number]
+
+interface TournamentData {
+  id: string
+  name: string
+  sport: string
+  image: string
+  date: string
+  venue: string
+  city: string
+  prizePool: number
+  entryFee: number
+  teamsJoined: number
+  totalSpots: number
+  format: string
+  status?: string
+  isLive?: boolean
+}
 
 export default function TournamentDetailPage({
   params,
@@ -20,26 +37,131 @@ export default function TournamentDetailPage({
   params: Promise<{ id: string }>
 }) {
   const { id } = use(params)
-  const t = tournaments.find((x) => x.id === id)
+  const { user } = useAuth()
   const [tab, setTab] = useState<Tab>('Overview')
+  const [tournament, setTournament] = useState<TournamentData | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [registering, setRegistering] = useState(false)
+  const [regSuccess, setRegSuccess] = useState(false)
+  const [regError, setRegError] = useState('')
 
-  if (!t) notFound()
+  // Fetch tournament from API (DynamoDB) with mock fallback
+  useEffect(() => {
+    async function fetchTournament() {
+      try {
+        const res = await fetch(`/api/tournaments/${id}`)
+        const data = await res.json()
+        if (data.success && data.data) {
+          const t = data.data
+          setTournament({
+            id: t.tournamentId || t.id || id,
+            name: t.name,
+            sport: t.sport || 'football',
+            image: t.image || '/images/tournament-banner.png',
+            date: t.date || 'TBD',
+            venue: t.venue || 'TBD',
+            city: t.city || '',
+            prizePool: t.prizePool || 0,
+            entryFee: t.entryFee || 0,
+            teamsJoined: t.teamsJoined || 0,
+            totalSpots: t.totalSpots || 16,
+            format: t.format || 'Knockout',
+            status: t.status,
+            isLive: true,
+          })
+        } else {
+          // Fallback to mock data
+          const mock = mockTournaments.find(x => x.id === id)
+          if (mock) setTournament({ ...mock, isLive: false })
+        }
+      } catch {
+        const mock = mockTournaments.find(x => x.id === id)
+        if (mock) setTournament({ ...mock, isLive: false })
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchTournament()
+  }, [id])
+
+  // Register for tournament
+  async function handleRegister() {
+    if (!tournament) return
+    setRegistering(true)
+    setRegError('')
+    try {
+      const res = await fetch(`/api/tournaments/${id}/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          teamName: `${user?.name || 'Player'}'s Team`,
+          playerIds: ['p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'p7'],
+          captainId: user?.id || 'p1',
+          paymentId: `pay_${Date.now()}`,
+        }),
+      })
+      const data = await res.json()
+      if (data.success) {
+        setRegSuccess(true)
+        // Update local state
+        setTournament(prev => prev ? { ...prev, teamsJoined: prev.teamsJoined + 1 } : prev)
+      } else {
+        setRegError(data.error || 'Registration failed')
+      }
+    } catch {
+      setRegError('Network error. Please try again.')
+    } finally {
+      setRegistering(false)
+    }
+  }
+
+  if (loading) {
+    return (
+      <AppShell withNav={false}>
+        <div className="flex flex-col items-center justify-center min-h-screen gap-3">
+          <Loader2 className="size-8 animate-spin text-primary" />
+          <p className="text-sm text-muted-foreground">Loading tournament...</p>
+        </div>
+      </AppShell>
+    )
+  }
+
+  if (!tournament) {
+    return (
+      <AppShell withNav={false}>
+        <div className="flex flex-col items-center justify-center min-h-screen gap-3">
+          <AlertCircle className="size-8 text-red-400" />
+          <p className="text-sm text-muted-foreground">Tournament not found</p>
+          <Link href="/tournaments" className="text-sm text-primary underline">Back to tournaments</Link>
+        </div>
+      </AppShell>
+    )
+  }
+
+  const t = tournament
 
   return (
     <AppShell withNav={false} className="pb-28">
       <div className="relative h-56">
-        <Image src={t.image || '/placeholder.svg'} alt={t.name} fill className="object-cover" />
+        <Image src={t.image || '/images/tournament-banner.png'} alt={t.name} fill className="object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-background/40" />
         <div className="absolute inset-x-0 top-0">
           <BackHeader />
         </div>
         <div className="absolute bottom-4 left-5 right-5">
-          <span className="rounded-full bg-accent px-2.5 py-1 text-[11px] font-semibold text-accent-foreground">
-            {t.format}
-          </span>
-          <h1 className="mt-2 text-2xl font-bold text-balance">{t.name}</h1>
-          <p className="mt-1 flex items-center gap-1.5 text-sm text-muted-foreground">
-            <MapPin className="size-3.5" /> {t.venue}, {t.city}
+          <div className="flex items-center gap-2">
+            <span className="rounded-full bg-accent px-2.5 py-1 text-[11px] font-semibold text-accent-foreground">
+              {t.format}
+            </span>
+            {t.isLive && (
+              <span className="rounded-full bg-emerald-500 px-2 py-0.5 text-[10px] font-bold text-white">
+                LIVE DB
+              </span>
+            )}
+          </div>
+          <h1 className="mt-2 text-2xl font-bold text-balance text-white">{t.name}</h1>
+          <p className="mt-1 flex items-center gap-1.5 text-sm text-white/80">
+            <MapPin className="size-3.5" /> {t.venue}{t.city ? `, ${t.city}` : ''}
           </p>
         </div>
       </div>
@@ -61,6 +183,22 @@ export default function TournamentDetailPage({
           )
         })}
       </div>
+
+      {/* Registration Success/Error */}
+      <AnimatePresence>
+        {regSuccess && (
+          <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+            className="mx-5 mt-4 flex items-center gap-2 rounded-xl bg-emerald-500/20 border border-emerald-500/30 px-4 py-3 text-sm text-emerald-300">
+            <CheckCircle2 className="size-4" /> Registration successful! Your team is in.
+          </motion.div>
+        )}
+        {regError && (
+          <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+            className="mx-5 mt-4 flex items-center gap-2 rounded-xl bg-red-500/20 border border-red-500/30 px-4 py-3 text-sm text-red-300">
+            <AlertCircle className="size-4" /> {regError}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Tabs */}
       <div className="no-scrollbar mt-5 flex gap-2 overflow-x-auto px-5">
@@ -103,6 +241,12 @@ export default function TournamentDetailPage({
                     pool of {formatCurrency(t.prizePool)} and a shot at the
                     regional finals.
                   </p>
+                  {t.isLive && (
+                    <p className="mt-2 text-xs text-emerald-400 flex items-center gap-1">
+                      <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                      Data from Amazon DynamoDB (real-time)
+                    </p>
+                  )}
                 </div>
                 <Link href="/live">
                   <div className="glass flex items-center gap-3 rounded-[18px] p-4">
@@ -112,7 +256,7 @@ export default function TournamentDetailPage({
                     <div>
                       <p className="font-semibold">Watch live matches</p>
                       <p className="text-xs text-muted-foreground">
-                        Real-time scores & stats
+                        Real-time scores and stats
                       </p>
                     </div>
                   </div>
@@ -135,6 +279,11 @@ export default function TournamentDetailPage({
                       <span className="text-xs text-muted-foreground">Seed #{i + 1}</span>
                     </div>
                   )
+                )}
+                {t.teamsJoined > 4 && (
+                  <p className="text-center text-xs text-muted-foreground py-2">
+                    +{t.teamsJoined - 4} more teams registered
+                  </p>
                 )}
               </div>
             )}
@@ -217,14 +366,28 @@ export default function TournamentDetailPage({
 
       {/* Fixed Join CTA */}
       <div className="fixed inset-x-0 bottom-0 z-50 mx-auto max-w-md px-5 pb-5">
-        <Link href={`/tournaments/${id}/register`}>
+        {regSuccess ? (
+          <div className="glass-strong flex w-full items-center justify-center gap-2 rounded-[18px] bg-emerald-600 py-4 font-semibold text-white">
+            <CheckCircle2 className="size-5" /> Registered Successfully
+          </div>
+        ) : t.teamsJoined >= t.totalSpots ? (
+          <div className="glass-strong flex w-full items-center justify-center gap-2 rounded-[18px] bg-gray-600 py-4 font-semibold text-white/70">
+            Tournament Full
+          </div>
+        ) : (
           <motion.button
             whileTap={{ scale: 0.97 }}
-            className="shadow-glow-primary glass-strong flex w-full items-center justify-center gap-2 rounded-[18px] bg-primary py-4 font-semibold text-primary-foreground"
+            onClick={handleRegister}
+            disabled={registering}
+            className="shadow-glow-primary glass-strong flex w-full items-center justify-center gap-2 rounded-[18px] bg-primary py-4 font-semibold text-primary-foreground disabled:opacity-60"
           >
-            Join Tournament · {formatCurrency(t.entryFee)}
+            {registering ? (
+              <><Loader2 className="size-5 animate-spin" /> Registering...</>
+            ) : (
+              <>Join Tournament · {formatCurrency(t.entryFee)}</>
+            )}
           </motion.button>
-        </Link>
+        )}
       </div>
     </AppShell>
   )
