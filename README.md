@@ -149,6 +149,11 @@ graph LR
 
 ### Full System Architecture
 
+<!--![TurfArena Architecture v4](./docs/screenshots/turfarena-architecture-v4.gif)-->
+![turfarena architecture v4.gif](https://images.tomarkdown.dev/uploaded/61zc54xsu8wnxxki.gif)
+
+> *Animated architecture diagram showing data flow across all AWS services. Open [`docs/architecture.drawio`](./docs/architecture.drawio) in draw.io for the editable version.*
+
 ```mermaid
 graph TD
     subgraph Frontend["FRONTEND - Vercel"]
@@ -230,6 +235,11 @@ graph LR
 
 ### Tournament Flow
 
+<!--![Tournament Flow v2](./docs/screenshots/tournament-flow-v2.png)-->
+![tournament flow v2.drawio.png](https://images.tomarkdown.dev/uploaded/ozh20atltydnxzf0.png)
+
+> *Complete tournament lifecycle: Create → Register → Live Score → Results. Open [`docs/tournament-flow.drawio`](./docs/tournament-flow.drawio) for editable version.*
+
 ```mermaid
 sequenceDiagram
     participant O as Organizer
@@ -273,59 +283,93 @@ erDiagram
     PLAYERS {
         string playerId PK
         string name
+        string email
         string city
         int ranking
         string role
+        string avatar
     }
     TEAMS {
         string teamId PK
         string teamName
         string captainId
         string sport
+        string city
+        int wins
+        int losses
     }
     TOURNAMENTS {
         string tournamentId PK
         string name
         string sport
         string format
+        string status
         int prizePool
         int entryFee
+        int teamsJoined
+        int totalSpots
+        string organizerId
     }
     MATCHES {
         string matchId PK
-        string tournamentId
+        string tournamentId FK
         string homeTeam
         string awayTeam
         int homeScore
         int awayScore
         string status
+        string sport
     }
     PLAYER_STATS {
         string playerId PK
         string sport SK
         int matchesPlayed
         int wins
+        int losses
+        int goals
+        int assists
         int mvpAwards
     }
     TURFS {
         string turfId PK
         string name
         string ownerId
+        string area
+        string city
         int pricePerHour
+        float rating
     }
     BOOKINGS {
         string bookingId PK
-        string turfId
-        string userId
+        string turfId FK
+        string userId FK
         string date
         string slot
+        string status
+        int amount
+    }
+    REGISTRATIONS {
+        string registrationId PK
+        string tournamentId FK
+        string teamId
+        string teamName
+        string captainId
+        string status
+    }
+    LEADERBOARDS {
+        string partitionKey PK
+        string playerId SK
+        int points
+        int rank
     }
 
     PLAYERS ||--o{ TEAMS : captains
-    PLAYERS ||--o{ PLAYER_STATS : has
-    PLAYERS ||--o{ BOOKINGS : books
+    PLAYERS ||--o{ PLAYER_STATS : has_stats
+    PLAYERS ||--o{ BOOKINGS : makes
     TOURNAMENTS ||--o{ MATCHES : contains
-    TURFS ||--o{ BOOKINGS : has
+    TOURNAMENTS ||--o{ REGISTRATIONS : has_registrations
+    TURFS ||--o{ BOOKINGS : receives
+    TEAMS ||--o{ REGISTRATIONS : registers
 ```
 
 ### User Journeys
@@ -622,8 +666,21 @@ For full details, IAM policies, and deployment steps, see [docs/AWS_SETUP.md](./
 | [DynamoDB & Observability](./docs/DYNAMODB_AND_OBSERVABILITY.md) | Database operations, CloudWatch metrics, monitoring |
 | [Performance Optimizations](./docs/PERFORMANCE_OPTIMIZATIONS.md) | Bundle optimization, caching, build improvements |
 | [Troubleshooting](./docs/TROUBLESHOOTING.md) | Common issues and solutions |
-| [Architecture Diagram](./docs/architecture.drawio) | Editable draw.io system architecture |
-| [Tournament Flow](./docs/tournament-flow.drawio) | Tournament + booking + AI flow diagram |
+| [Architecture Diagram](./docs/architecture.drawio) | Editable draw.io system architecture (v4) |
+| [Tournament Flow](./docs/tournament-flow.drawio) | Tournament + booking + AI flow diagram (v2) |
+
+### Diagram Assets
+
+| File | Format | Description |
+|------|--------|-------------|
+| `docs/screenshots/turfarena-architecture-v4.gif` | GIF | Animated system architecture showing data flow |
+| `docs/screenshots/tournament-flow-v2.png` | PNG | Tournament lifecycle: Create → Register → Score → Results |
+
+> **How to generate these images:**
+> 1. Open `docs/architecture.drawio` in [draw.io](https://app.diagrams.net)
+> 2. Export as GIF (animated) → save as `docs/screenshots/turfarena-architecture-v4.gif`
+> 3. Open `docs/tournament-flow.drawio` in draw.io
+> 4. Export as PNG → save as `docs/screenshots/tournament-flow-v2.png`
 
 ---
 
