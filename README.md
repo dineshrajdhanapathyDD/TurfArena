@@ -281,16 +281,15 @@ sequenceDiagram
 ```mermaid
 erDiagram
     PLAYERS {
-        string playerId PK
+        string playerId
         string name
         string email
         string city
         int ranking
         string role
-        string avatar
     }
     TEAMS {
-        string teamId PK
+        string teamId
         string teamName
         string captainId
         string sport
@@ -299,7 +298,7 @@ erDiagram
         int losses
     }
     TOURNAMENTS {
-        string tournamentId PK
+        string tournamentId
         string name
         string sport
         string format
@@ -311,8 +310,8 @@ erDiagram
         string organizerId
     }
     MATCHES {
-        string matchId PK
-        string tournamentId FK
+        string matchId
+        string tournamentId
         string homeTeam
         string awayTeam
         int homeScore
@@ -321,8 +320,8 @@ erDiagram
         string sport
     }
     PLAYER_STATS {
-        string playerId PK
-        string sport SK
+        string playerId
+        string sport
         int matchesPlayed
         int wins
         int losses
@@ -331,34 +330,33 @@ erDiagram
         int mvpAwards
     }
     TURFS {
-        string turfId PK
+        string turfId
         string name
         string ownerId
         string area
         string city
         int pricePerHour
-        float rating
     }
     BOOKINGS {
-        string bookingId PK
-        string turfId FK
-        string userId FK
+        string bookingId
+        string turfId
+        string userId
         string date
         string slot
         string status
         int amount
     }
     REGISTRATIONS {
-        string registrationId PK
-        string tournamentId FK
+        string registrationId
+        string tournamentId
         string teamId
         string teamName
         string captainId
         string status
     }
     LEADERBOARDS {
-        string partitionKey PK
-        string playerId SK
+        string partitionKey
+        string playerId
         int points
         int rank
     }
