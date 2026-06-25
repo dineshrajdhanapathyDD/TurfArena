@@ -9,7 +9,7 @@
 
 ## Inspiration
 
-Every weekend across India, thousands of football, cricket, badminton, volleyball, and basketball turfs host matches. But here's the reality — most tournaments are managed through **WhatsApp groups and spreadsheets**. There's no centralized platform for player statistics, rankings, tournament history, online registration, digital score tracking, or turf management.
+Every weekend across India, thousands of football, cricket, badminton, volleyball, and basketball turfs host matches. But here's the reality most tournaments are managed through **WhatsApp groups and spreadsheets**. There's no centralized platform for player statistics, rankings, tournament history, online registration, digital score tracking, or turf management.
 
 We witnessed this firsthand:
 - Local players had **no way to track performance** across seasons
@@ -19,7 +19,10 @@ We witnessed this firsthand:
 
 We asked: **What if local sports communities had their own operating system?**
 
-That's how TurfArena was born — a platform that connects players, team captains, tournament organizers, and turf owners in a single ecosystem powered by AWS.
+That's how TurfArena was born a platform that connects players, team captains, tournament organizers, and turf owners in a single ecosystem powered by AWS.
+
+
+![TurfArena open page](https://images.tomarkdown.dev/uploaded/kkjpbdl5mh5i3a0n.png)
 
 ---
 
@@ -34,15 +37,14 @@ TurfArena is a full-stack sports platform with **22 API endpoints**, **44 pages*
 - Community feed to share match results, achievements, highlights
 - GPS-based check-in at match venues (200m geofencing)
 
-![Player Dashboard](./screenshots/player-dashboard.png)
+![Player Dashboard](https://images.tomarkdown.dev/uploaded/c7fjt59kb95sc7he.png)
 *Player dashboard showing upcoming matches, performance stats, and AI recommendations*
 
-### For Team Captains
-- Manage team rosters and formations
-- Register teams for tournaments with multi-step wizard
-- Track team statistics and rankings
+## Leaderboard Ranking
+- participant points wise ranking.
+- players, Teams, Turf can able to see the list on the top.
 
-![Team Management](./screenshots/team-management.png)
+![LeaderBoard](https://images.tomarkdown.dev/uploaded/vi101d20o569vd7x.png)
 *Team formation view with player positions and match history*
 
 ### For Tournament Organizers
@@ -51,7 +53,7 @@ TurfArena is a full-stack sports platform with **22 API endpoints**, **44 pages*
 - Revenue tracking and analytics dashboard
 - Delete/edit tournaments with safety checks (can't delete active ones)
 
-![Organizer Dashboard](./screenshots/organizer-dashboard.png)
+![Organizer Dashboard](https://images.tomarkdown.dev/uploaded/imwasi9ohp01srqz.png)
 *Organizer dashboard with tournament analytics, revenue metrics, and team registrations from DynamoDB*
 
 ### For Turf Owners
@@ -60,7 +62,7 @@ TurfArena is a full-stack sports platform with **22 API endpoints**, **44 pages*
 - Receive booking confirmations via EventBridge events
 - View both live DynamoDB bookings and historical data
 
-![Owner Dashboard](./screenshots/owner-dashboard.png)
+![Owner Dashboard](https://images.tomarkdown.dev/uploaded/67rx30ycysrvgjaf.png)
 *Owner dashboard showing real bookings (green DB badge) alongside historical data*
 
 ### AI Features (Amazon Bedrock - Nova Micro)
@@ -74,7 +76,7 @@ where $W$ = wins, $M$ = matches played, $S$ = current streak, $F$ = form factor
 - **AI Coach** — personalized drills and estimated improvement percentages
 - **Team Builder** — suggested formations and teammate chemistry scoring
 
-![AI Coach](./screenshots/ai-coach.png)
+![AI Coach](https://images.tomarkdown.dev/uploaded/0spfquh417kssh92.png)
 *AI Coach providing personalized training recommendations and match predictions*
 
 ### Real-Time Booking (Valkey/Redis)
@@ -82,7 +84,7 @@ where $W$ = wins, $M$ = matches played, $S$ = current streak, $F$ = form factor
 - Instant availability checks with 60s cache TTL
 - Rate limiting per user to prevent abuse
 
-![Turf Booking](./screenshots/turf-booking.png)
+![Turf Booking](https://images.tomarkdown.dev/uploaded/i8foqm2wu6lwvd0f.png)
 *Turf booking flow with calendar date picker, time slot selection, and real-time availability*
 
 ### Maps & Location
@@ -90,7 +92,7 @@ where $W$ = wins, $M$ = matches played, $S$ = current streak, $F$ = form factor
 - Nearby turfs search with Haversine distance calculation
 - GPS-based check-in with 200m geofencing
 
-![Map View](./screenshots/map-view.png)
+![Map View](https://images.tomarkdown.dev/uploaded/454dsj4jxvghrm87.png)
 *Interactive map showing turf location with distance indicator*
 
 ---
@@ -108,7 +110,8 @@ Browser (PWA) → Vercel Edge CDN → Next.js 16 (SSR + API Routes)
                                          └─→ OpenStreetMap (maps)
 ```
 
-![Architecture Diagram](./screenshots/architecture-diagram.png)
+
+![Architecture Diagram](https://images.tomarkdown.dev/uploaded/rrjymqyo48afk4li.gif)
 *Full system architecture — open `docs/architecture.drawio` in draw.io for editable version*
 
 ### Frontend
@@ -125,7 +128,7 @@ Browser (PWA) → Vercel Edge CDN → Next.js 16 (SSR + API Routes)
 - Mobile-first responsive design (320px to desktop)
 - Dark theme with careful contrast auditing (WCAG-aware)
 
-![Mobile View](./screenshots/mobile-responsive.png)
+![Mobile View](https://images.tomarkdown.dev/uploaded/sxdgdi7h0u6bmnoa.png)
 *Mobile responsive layout with bottom navigation and touch-optimized targets*
 
 ### Backend (Serverless API)
@@ -150,7 +153,7 @@ Browser (PWA) → Vercel Edge CDN → Next.js 16 (SSR + API Routes)
 | List append | Match events added in real-time without overwriting |
 | Conditional writes | Tournament capacity checks before registration |
 
-![DynamoDB Tables](./screenshots/dynamodb-tables.png)
+![DynamoDB Tables](https://images.tomarkdown.dev/uploaded/p9l6hykgty9dvgjr.png)
 *AWS Console showing all 9 TurfArena tables with active status*
 
 ### Events (Amazon EventBridge)
@@ -173,7 +176,7 @@ Browser (PWA) → Vercel Edge CDN → Next.js 16 (SSR + API Routes)
 - Generates insights from real DynamoDB player stats
 - 5 AI functions: coach, commentary, report, prediction, strategy
 
-![Bedrock AI](./screenshots/bedrock-ai-insights.png)
+![Bedrock AI](https://images.tomarkdown.dev/uploaded/qx03a0skoxj670gd.png)
 *AI-generated performance insights based on real player statistics from DynamoDB*
 
 ### Cache (Upstash Valkey/Redis)
@@ -307,39 +310,6 @@ Where:
 
 ---
 
-## Screenshots Reference
 
-> Add screenshots to `docs/screenshots/` folder. Recommended captures:
-
-| Screenshot | What to Capture |
-|-----------|----------------|
-| `player-dashboard.png` | Customer dashboard with stats cards and upcoming matches |
-| `team-management.png` | Team page with formation and player list |
-| `organizer-dashboard.png` | Organizer dashboard with tournaments from DynamoDB |
-| `owner-dashboard.png` | Owner dashboard with bookings (green DB badge for real data) |
-| `ai-coach.png` | AI Coach chat page with recommendations |
-| `turf-booking.png` | Turf detail page with date picker and slot selection |
-| `map-view.png` | Map view on turf detail page showing location |
-| `mobile-responsive.png` | Mobile view showing bottom nav and responsive layout |
-| `live-match.png` | Live match scoring with football/cricket toggle |
-| `tournament-detail.png` | Tournament detail page with brackets/teams |
-| `community-feed.png` | Community page with posts, likes, comments |
-| `leaderboards.png` | Leaderboards page with podium view |
-| `auth-page.png` | Login page with role selection |
-| `dynamodb-tables.png` | AWS Console showing DynamoDB tables |
-| `architecture-diagram.png` | Export of draw.io architecture diagram |
-| `bedrock-ai-insights.png` | AI insights cards on profile/tournament pages |
-| `valkey-booking-flow.png` | Booking confirmation with slot lock success |
-| `eventbridge-events.png` | AWS Console showing EventBridge bus and rules |
-
-### How to Take Screenshots
-
-1. Open the live site: [turf-arena-gilt.vercel.app](https://turf-arena-gilt.vercel.app)
-2. Login with different roles (see test credentials in README)
-3. Use browser DevTools (F12) → Toggle device toolbar for mobile views
-4. Capture and save to `docs/screenshots/` folder
-5. Recommended: 1280x720 for desktop, 375x812 for mobile
-
----
 
 *Built for the **H0: Hack the Zero Stack with Vercel v0 and AWS Databases** hackathon.*
