@@ -36,3 +36,9 @@ next-env.d.ts
 
 .vercel
 .env*
+
+# Secret scripts - NEVER commit
+scripts/set-env.bat
+scripts/set-env.sh
+*.secret
+*.credentials
