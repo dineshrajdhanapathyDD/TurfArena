@@ -1,8 +1,24 @@
 # TurfArena — The Operating System for Local Sports Communities
 
-> A full-stack sports platform that connects players, teams, organizers, and turf owners — powered by AWS DynamoDB, EventBridge, Bedrock AI, and Valkey.
+> A full-stack sports platform that connects players, teams, organizers, and turf owners — powered by **Vercel v0** (AI-powered frontend generation), AWS DynamoDB, EventBridge, Bedrock AI, and Valkey.
 
 **Live:** [turf-arena-gilt.vercel.app](https://turf-arena-gilt.vercel.app) | **GitHub:** [github.com/dineshrajdhanapathyDD/TurfArena](https://github.com/dineshrajdhanapathyDD/TurfArena)
+
+### Deployed on Vercel
+
+TurfArena is deployed on **[Vercel](https://vercel.com)** with full GitHub integration — every push to `main` triggers an automatic production build and deployment.
+
+| Feature | Details |
+|---------|---------|
+| **Frontend Generation** | [Vercel v0](https://v0.dev) — AI-powered, describe UI → get production-ready React/Next.js + Tailwind CSS code, deploy in one click |
+| **Hosting** | Vercel Edge Network — global CDN with 100+ edge locations |
+| **Serverless Backend** | 22 API routes as serverless functions (auto-scaling, zero cold starts) |
+| **CI/CD** | GitHub → Vercel auto-deploy pipeline (push to main = live in ~35 seconds) |
+| **Framework** | Next.js 16 (auto-detected, optimized builds) |
+| **Build** | `next build --webpack` with SWC minification |
+| **Analytics** | Vercel Analytics + Speed Insights (Core Web Vitals: LCP, CLS, INP) |
+| **Preview Deploys** | Every PR gets a unique preview URL for testing |
+| **Domain** | [turf-arena-gilt.vercel.app](https://turf-arena-gilt.vercel.app) |
 
 ---
 
@@ -166,7 +182,7 @@ The atomic counter ensures accurate team counts even under concurrent registrati
 | Valkey/Redis (not just DynamoDB) | DynamoDB can't do atomic `SET NX` — needed for sub-millisecond slot locking |
 | EventBridge (not direct calls) | Decouples producers from consumers. Adding push notifications later = add a rule, no code change |
 | Bedrock Nova Micro (not GPT) | AWS-native, fast, cost-effective. No external API dependency |
-| Vercel (not EC2/ECS) | Zero-config deployment, serverless functions = Lambda equivalent, global CDN |
+| Vercel (not EC2/ECS) | Zero-config deployment, serverless functions = Lambda equivalent, global CDN, v0 for rapid UI generation |
 | OpenStreetMap (not Google Maps) | Free, no API key, no billing surprises |
 
 ---
@@ -220,6 +236,7 @@ Adding new consumers (Lambda, SQS, SNS) requires **zero code changes** — just 
 | Layer | Technology | Why |
 |-------|-----------|-----|
 | **Frontend** | Next.js 16, React 19, Tailwind CSS 4 | App Router SSR, dark theme, 44 pages |
+| **UI Generation** | Vercel v0 | AI-powered frontend generation — describe UI, get production-ready code |
 | **Animation** | Framer Motion | Smooth page transitions |
 | **Maps** | Leaflet + OpenStreetMap | Free, no API key |
 | **Icons** | Lucide React | Consistent iconography |
@@ -334,6 +351,8 @@ npm run dev        # Now connected to real DynamoDB
 ## Recognition
 
 Built for the **H0: Hack the Zero Stack with Vercel v0 and AWS Databases** hackathon.
+
+**Vercel v0** was used to generate the initial UI components — describe what you want, v0 generates production-ready React/Next.js code with Tailwind CSS, and deploy to Vercel in one click.
 
 ### Judging Criteria Alignment
 

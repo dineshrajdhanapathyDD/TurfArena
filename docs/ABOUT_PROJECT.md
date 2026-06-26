@@ -5,6 +5,16 @@
 **Live Demo:** [turf-arena-gilt.vercel.app](https://turf-arena-gilt.vercel.app)  
 **GitHub:** [github.com/dineshrajdhanapathyDD/TurfArena](https://github.com/dineshrajdhanapathyDD/TurfArena)
 
+### Deployed on Vercel
+
+This project is deployed on **[Vercel](https://vercel.com)** with GitHub auto-deploy integration. The frontend was generated using **[Vercel v0](https://v0.dev)** — an AI-powered tool that generates production-ready React/Next.js code with Tailwind CSS. Describe what you want, v0 generates the code, and deploy to Vercel in one click.
+
+- **Auto-deploy:** Every push to `main` → automatic production build (~35s)
+- **Serverless:** 22 API routes run as Vercel serverless functions
+- **Edge CDN:** Static assets served from 100+ global edge locations
+- **Preview URLs:** Every pull request gets a unique preview deployment
+- **Zero-config:** Vercel auto-detects Next.js framework, no setup needed
+
 ---
 
 ## Inspiration
@@ -296,6 +306,7 @@ Where:
 
 | Category | Technologies |
 |----------|-------------|
+| **UI Generation** | [Vercel v0](https://v0.dev) — AI-powered frontend generation, describe UI → get code |
 | **Frontend** | Next.js 16, React 19, TypeScript, Tailwind CSS 4, Framer Motion, Leaflet |
 | **Backend** | Vercel Serverless Functions, AWS SDK v3 |
 | **Database** | Amazon DynamoDB (9 tables, 7 GSIs, PAY_PER_REQUEST) |
@@ -303,7 +314,7 @@ Where:
 | **Events** | Amazon EventBridge |
 | **AI** | Amazon Bedrock (Nova Micro - `us.amazon.nova-micro-v1:0`) |
 | **Maps** | OpenStreetMap + Leaflet.js |
-| **Deployment** | Vercel (Edge CDN + Serverless) |
+| **Deployment** | Vercel (Edge CDN + Serverless) — one-click deploy from v0 |
 | **Monitoring** | Vercel Analytics, CloudWatch Metrics |
 | **UI** | shadcn/ui, Lucide React |
 | **Region** | AWS us-east-1 |
@@ -313,3 +324,5 @@ Where:
 
 
 *Built for the **H0: Hack the Zero Stack with Vercel v0 and AWS Databases** hackathon.*
+
+**Vercel v0** — AI-powered frontend generation — was used throughout this project. Describe what you want, v0 generates production-ready React/Next.js code with Tailwind CSS, and deploy to Vercel in one click. This allowed us to build 44 pages with a consistent dark theme and responsive design in record time.

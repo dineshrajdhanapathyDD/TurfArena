@@ -2,6 +2,7 @@
 
 > The Operating System for Local Sports Communities — Join tournaments. Track performance. Build your sports identity.
 
+[![Built with Vercel v0](https://img.shields.io/badge/Built%20with-Vercel%20v0-000?logo=vercel)](https://v0.dev)
 [![Built with Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)](https://nextjs.org)
 [![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-000?logo=vercel)](https://vercel.com)
 [![Database: DynamoDB](https://img.shields.io/badge/Database-Amazon%20DynamoDB-4053D6?logo=amazondynamodb)](https://aws.amazon.com/dynamodb/)
@@ -10,6 +11,17 @@
 [![Events: EventBridge](https://img.shields.io/badge/Events-Amazon%20EventBridge-FF9900?logo=amazonaws)](https://aws.amazon.com/eventbridge/)
 
 **Live Demo:** [turf-arena-gilt.vercel.app](https://turf-arena-gilt.vercel.app)
+
+### Deployment
+
+This project is deployed on **[Vercel](https://vercel.com)** with GitHub integration for automatic builds and deployments. Every push to `main` triggers a production build automatically.
+
+- **Frontend Generation:** [Vercel v0](https://v0.dev) — AI-powered tool that generates production-ready React/Next.js code with Tailwind CSS. Describe what you want, v0 generates the code, deploy to Vercel in one click.
+- **Hosting:** Vercel Edge Network (global CDN, serverless functions)
+- **CI/CD:** GitHub → Vercel auto-deploy on every push
+- **Framework:** Next.js 16 (auto-detected by Vercel)
+- **Build Command:** `next build --webpack`
+- **Serverless Functions:** 22 API routes deployed as serverless functions (equivalent to AWS Lambda + API Gateway)
 
 ---
 
@@ -53,8 +65,9 @@ TurfArena connects players, team captains, tournament organizers, and turf owner
 
 | Layer | Technology |
 |-------|-----------|
+| UI Generation | [Vercel v0](https://v0.dev) — AI-powered frontend generation, describe UI → get production-ready code |
 | Frontend | Next.js 16, React 19, Tailwind CSS 4, Framer Motion, Leaflet (OpenStreetMap) |
-| Deployment | Vercel (serverless functions + Edge CDN) |
+| Deployment | Vercel (serverless functions + Edge CDN) — one-click deploy from v0 |
 | Database | Amazon DynamoDB (9 tables, PAY_PER_REQUEST, 7 GSIs) |
 | Cache | Upstash Valkey/Redis (real-time slot locking) |
 | Events | Amazon EventBridge (7 event types) |
@@ -679,6 +692,24 @@ For full details, IAM policies, and deployment steps, see [docs/AWS_SETUP.md](./
 > 2. Export as GIF (animated) → save as `docs/screenshots/turfarena-architecture-v4.gif`
 > 3. Open `docs/tournament-flow.drawio` in draw.io
 > 4. Export as PNG → save as `docs/screenshots/tournament-flow-v2.png`
+
+---
+
+## Vercel v0 — AI-Powered Frontend
+
+TurfArena's UI was built using **[Vercel v0](https://v0.dev)** — an AI-powered tool for generating production-ready React/Next.js code with Tailwind CSS.
+
+**How we used v0:**
+1. Described the UI we wanted (e.g., "dark theme tournament card with progress bar and sport icons")
+2. v0 generated complete React components with Tailwind CSS
+3. We customized and integrated with our DynamoDB backend
+4. Deployed to Vercel in one click
+
+**Benefits:**
+- Rapid prototyping — 44 pages built in days, not weeks
+- Production-quality code with proper accessibility
+- Consistent design system across all components
+- Seamless Vercel deployment pipeline
 
 ---
 

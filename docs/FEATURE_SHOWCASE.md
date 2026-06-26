@@ -538,3 +538,5 @@ docs/screenshots/
 ---
 
 *Built for the **H0: Hack the Zero Stack with Vercel v0 and AWS Databases** hackathon.*
+
+*Frontend UI generated using **[Vercel v0](https://v0.dev)** — AI-powered frontend generation. Describe what you want, v0 generates production-ready React/Next.js code with Tailwind CSS. Deploy to Vercel in one click.*
