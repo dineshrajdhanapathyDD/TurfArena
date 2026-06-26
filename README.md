@@ -713,6 +713,18 @@ TurfArena's UI was built using **[Vercel v0](https://v0.dev)** — an AI-powered
 
 ---
 
+*Developed by [Kiro](https://kiro.dev) — AI-powered development environment.*
+
+### Team
+
+- **Dineshraj Dhanapathy**
+- **Abinaya SV**
+- **Mariyam Usmani**
+---
 ## License
 
 MIT
+
+---
+
+

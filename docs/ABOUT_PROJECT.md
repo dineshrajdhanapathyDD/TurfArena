@@ -321,8 +321,17 @@ Where:
 
 ---
 
+### Team
 
+- **Dineshraj Dhanapathy**
+- **Abinaya SV**
+- **Mariyam Usmani**
 
 *Built for the **H0: Hack the Zero Stack with Vercel v0 and AWS Databases** hackathon.*
 
 **Vercel v0** — AI-powered frontend generation — was used throughout this project. Describe what you want, v0 generates production-ready React/Next.js code with Tailwind CSS, and deploy to Vercel in one click. This allowed us to build 44 pages with a consistent dark theme and responsive design in record time.
+
+---
+
+*Developed by [Kiro](https://kiro.dev) — AI-powered development environment.*
+
