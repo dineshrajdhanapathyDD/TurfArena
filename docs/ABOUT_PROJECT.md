@@ -1,4 +1,4 @@
-# TurfArena — About the Project
+# TurfArena - About the Project
 
 > The Operating System for Local Sports Communities
 
@@ -7,7 +7,7 @@
 
 ### Deployed on Vercel
 
-This project is deployed on **[Vercel](https://vercel.com)** with GitHub auto-deploy integration. The frontend was generated using **[Vercel v0](https://v0.dev)** — an AI-powered tool that generates production-ready React/Next.js code with Tailwind CSS. Describe what you want, v0 generates the code, and deploy to Vercel in one click.
+This project is deployed on **[Vercel](https://vercel.com)** with GitHub auto-deploy integration. The frontend was generated using **[Vercel v0](https://v0.dev)** - an AI-powered tool that generates production-ready React/Next.js code with Tailwind CSS. Describe what you want, v0 generates the code, and deploy to Vercel in one click.
 
 - **Auto-deploy:** Every push to `main` → automatic production build (~35s)
 - **Serverless:** 22 API routes run as Vercel serverless functions
@@ -39,6 +39,9 @@ That's how TurfArena was born a platform that connects players, team captains, t
 ## What it does
 
 TurfArena is a full-stack sports platform with **22 API endpoints**, **44 pages**, and **9 DynamoDB tables** that enables:
+
+![booking dynamodb.png](https://images.tomarkdown.dev/uploaded/8e90xwjj8mb0kfr4.png)
+
 
 ### For Players
 - Join tournaments, track performance across football, cricket, basketball
@@ -107,6 +110,7 @@ where $W$ = wins, $M$ = matches played, $S$ = current streak, $F$ = form factor
 
 ---
 
+
 ## How we built it
 
 ### Architecture Overview
@@ -123,6 +127,14 @@ Browser (PWA) → Vercel Edge CDN → Next.js 16 (SSR + API Routes)
 
 ![Architecture Diagram](https://images.tomarkdown.dev/uploaded/rrjymqyo48afk4li.gif)
 *Full system architecture — open `docs/architecture.drawio` in draw.io for editable version*
+
+### Architecture connection diagram 
+- DynamoDB box shows which API endpoint writes to which table
+- Bedrock has a dashed line back to PlayerStats showing it reads stats before generating AI
+- Legend box explains the 6-step data flow order
+
+![our app flow.gif](https://images.tomarkdown.dev/uploaded/5ghene8xzlm3sfe2.gif)
+
 
 ### Frontend
 | Technology | Purpose |
@@ -165,6 +177,9 @@ Browser (PWA) → Vercel Edge CDN → Next.js 16 (SSR + API Routes)
 
 ![DynamoDB Tables](https://images.tomarkdown.dev/uploaded/p9l6hykgty9dvgjr.png)
 *AWS Console showing all 9 TurfArena tables with active status*
+
+![Dynamodb booking data.png](https://images.tomarkdown.dev/uploaded/uwa8qbg2wp73p3bq.png)
+*Booking data in DynamoDB table*
 
 ### Events (Amazon EventBridge)
 - **7 event types** fire automatically on key actions
@@ -258,17 +273,17 @@ Two users booking the same slot at the same millisecond would both succeed with 
 
 2. **Serverless doesn't mean simple.** Managing environment variables across Vercel environments (Production, Preview, Development) taught us about deployment pipelines and the importance of infrastructure-as-code.
 
-3. **EventBridge is powerful for decoupling.** By publishing events on key actions, we can add new consumers (email, push, analytics) without changing existing code — true event-driven architecture.
+3. **EventBridge is powerful for decoupling.** By publishing events on key actions, we can add new consumers (email, push, analytics) without changing existing code true event-driven architecture.
 
 4. **Mobile-first dark themes need careful contrast auditing.** What looks great on one background becomes invisible on another. We audited every page manually.
 
-5. **AWS SDK v3 is modular and tree-shakeable** — unlike v2, we only bundle the DynamoDB, EventBridge, and Bedrock clients we actually use, keeping bundle size small.
+5. **AWS SDK v3 is modular and tree-shakeable**  unlike v2, we only bundle the DynamoDB, EventBridge, and Bedrock clients we actually use, keeping bundle size small.
 
-6. **Feature flags save development time.** `AWS_ENABLED` and `VALKEY_ENABLED` let frontend and backend teams work independently — mock data for UI development, real data for integration testing.
+6. **Feature flags save development time.** `AWS_ENABLED` and `VALKEY_ENABLED` let frontend and backend teams work independently mock data for UI development, real data for integration testing.
 
 7. **Redis/Valkey is essential for booking systems.** DynamoDB alone can't prevent race conditions in high-concurrency scenarios. The `SET NX` pattern is simple but powerful.
 
-8. **Amazon Bedrock Nova Micro is fast and cost-effective** for generating insights from structured data. No fine-tuning needed — just good prompt engineering with player stats context.
+8. **Amazon Bedrock Nova Micro is fast and cost-effective** for generating insights from structured data. No fine-tuning needed just good prompt engineering with player stats context.
 
 ---
 
@@ -306,7 +321,7 @@ Where:
 
 | Category | Technologies |
 |----------|-------------|
-| **UI Generation** | [Vercel v0](https://v0.dev) — AI-powered frontend generation, describe UI → get code |
+| **UI Generation** | [Vercel v0](https://v0.dev)  AI-powered frontend generation, describe UI → get code |
 | **Frontend** | Next.js 16, React 19, TypeScript, Tailwind CSS 4, Framer Motion, Leaflet |
 | **Backend** | Vercel Serverless Functions, AWS SDK v3 |
 | **Database** | Amazon DynamoDB (9 tables, 7 GSIs, PAY_PER_REQUEST) |
@@ -314,24 +329,22 @@ Where:
 | **Events** | Amazon EventBridge |
 | **AI** | Amazon Bedrock (Nova Micro - `us.amazon.nova-micro-v1:0`) |
 | **Maps** | OpenStreetMap + Leaflet.js |
-| **Deployment** | Vercel (Edge CDN + Serverless) — one-click deploy from v0 |
+| **Deployment** | Vercel (Edge CDN + Serverless)  one-click deploy from v0 |
 | **Monitoring** | Vercel Analytics, CloudWatch Metrics |
 | **UI** | shadcn/ui, Lucide React |
 | **Region** | AWS us-east-1 |
 
 ---
-
 ### Team
 
 - **Dineshraj Dhanapathy**
 - **Abinaya SV**
 - **Mariyam Usmani**
 
-*Built for the **H0: Hack the Zero Stack with Vercel v0 and AWS Databases** hackathon.*
+Built for the **H0: Hack the Zero Stack with Vercel v0 and AWS Databases** hackathon.
 
-**Vercel v0** — AI-powered frontend generation — was used throughout this project. Describe what you want, v0 generates production-ready React/Next.js code with Tailwind CSS, and deploy to Vercel in one click. This allowed us to build 44 pages with a consistent dark theme and responsive design in record time.
+**Vercel v0** - AI-powered frontend generation was used throughout this project. Describe what you want, v0 generates production-ready React/Next.js code with Tailwind CSS, and deploy to Vercel in one click. This allowed us to build 44 pages with a consistent dark theme and responsive design in record time.
 
 ---
 
-*Developed by [Kiro](https://kiro.dev) — AI-powered development environment.*
-
+*Developed by [Kiro](https://kiro.dev) AI-powered development environment.*

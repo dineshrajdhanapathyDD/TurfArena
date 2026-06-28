@@ -16,7 +16,7 @@
 
 This project is deployed on **[Vercel](https://vercel.com)** with GitHub integration for automatic builds and deployments. Every push to `main` triggers a production build automatically.
 
-- **Frontend Generation:** [Vercel v0](https://v0.dev) — AI-powered tool that generates production-ready React/Next.js code with Tailwind CSS. Describe what you want, v0 generates the code, deploy to Vercel in one click.
+- **Frontend Generation:** [Vercel v0](https://v0.dev)  AI-powered tool that generates production-ready React/Next.js code with Tailwind CSS. Describe what you want, v0 generates the code, deploy to Vercel in one click.
 - **Hosting:** Vercel Edge Network (global CDN, serverless functions)
 - **CI/CD:** GitHub → Vercel auto-deploy on every push
 - **Framework:** Next.js 16 (auto-detected by Vercel)
@@ -31,7 +31,7 @@ Across India, thousands of football, cricket, badminton, volleyball, and basketb
 
 ## Solution
 
-TurfArena connects players, team captains, tournament organizers, and turf owners in a single ecosystem — enabling tournament management, live score tracking, player profiles, rankings, AI coaching, real-time booking, and business tools for turf owners.
+TurfArena connects players, team captains, tournament organizers, and turf owners in a single ecosystem  enabling tournament management, live score tracking, player profiles, rankings, AI coaching, real-time booking, and business tools for turf owners.
 
 ---
 
@@ -67,7 +67,7 @@ TurfArena connects players, team captains, tournament organizers, and turf owner
 |-------|-----------|
 | UI Generation | [Vercel v0](https://v0.dev) — AI-powered frontend generation, describe UI → get production-ready code |
 | Frontend | Next.js 16, React 19, Tailwind CSS 4, Framer Motion, Leaflet (OpenStreetMap) |
-| Deployment | Vercel (serverless functions + Edge CDN) — one-click deploy from v0 |
+| Deployment | Vercel (serverless functions + Edge CDN) one-click deploy from v0 |
 | Database | Amazon DynamoDB (9 tables, PAY_PER_REQUEST, 7 GSIs) |
 | Cache | Upstash Valkey/Redis (real-time slot locking) |
 | Events | Amazon EventBridge (7 event types) |
@@ -166,6 +166,13 @@ graph LR
 ![turfarena architecture v4.gif](https://images.tomarkdown.dev/uploaded/61zc54xsu8wnxxki.gif)
 
 > *Animated architecture diagram showing data flow across all AWS services. Open [`docs/architecture.drawio`](./docs/architecture.drawio) in draw.io for the editable version.*
+
+### Architecture connection diagram 
+- DynamoDB box shows which API endpoint writes to which table
+- Bedrock has a dashed line back to PlayerStats showing it reads stats before generating AI
+- Legend box explains the 6-step data flow order
+
+![our app flow.gif](https://images.tomarkdown.dev/uploaded/5ghene8xzlm3sfe2.gif)
 
 ```mermaid
 graph TD
@@ -671,13 +678,11 @@ For full details, IAM policies, and deployment steps, see [docs/AWS_SETUP.md](./
 | Document | Description |
 |----------|-------------|
 | [About the Project](./docs/ABOUT_PROJECT.md) | Hackathon story, inspiration, challenges, accomplishments |
-| [Feature Showcase](./docs/FEATURE_SHOWCASE.md) | Complete feature walkthrough with screenshot references |
+| [TurfArena Article](./docs/TurfArena.md) | Full project article with architecture and tech details |
 | [AWS Setup Guide](./docs/AWS_SETUP.md) | DynamoDB + EventBridge integration walkthrough |
-| [Setup Guide](./docs/SETUP_GUIDE.md) | Quick start local development guide |
 | [DynamoDB & Observability](./docs/DYNAMODB_AND_OBSERVABILITY.md) | Database operations, CloudWatch metrics, monitoring |
-| [Performance Optimizations](./docs/PERFORMANCE_OPTIMIZATIONS.md) | Bundle optimization, caching, build improvements |
-| [Troubleshooting](./docs/TROUBLESHOOTING.md) | Common issues and solutions |
-| [Architecture Diagram](./docs/architecture.drawio) | Editable draw.io system architecture (v4) |
+| [Architecture Diagram](./docs/reference.drawio) | How app connects to database (draw.io) |
+| [System Architecture](./docs/architecture.drawio) | Full system architecture diagram (v4) |
 | [Tournament Flow](./docs/tournament-flow.drawio) | Tournament + booking + AI flow diagram (v2) |
 
 ### Diagram Assets
@@ -695,9 +700,9 @@ For full details, IAM policies, and deployment steps, see [docs/AWS_SETUP.md](./
 
 ---
 
-## Vercel v0 — AI-Powered Frontend
+## Vercel v0  AI-Powered Frontend
 
-TurfArena's UI was built using **[Vercel v0](https://v0.dev)** — an AI-powered tool for generating production-ready React/Next.js code with Tailwind CSS.
+TurfArena's UI was built using **[Vercel v0](https://v0.dev)**  an AI-powered tool for generating production-ready React/Next.js code with Tailwind CSS.
 
 **How we used v0:**
 1. Described the UI we wanted (e.g., "dark theme tournament card with progress bar and sport icons")
@@ -706,14 +711,14 @@ TurfArena's UI was built using **[Vercel v0](https://v0.dev)** — an AI-powered
 4. Deployed to Vercel in one click
 
 **Benefits:**
-- Rapid prototyping — 44 pages built in days, not weeks
+- Rapid prototyping  44 pages built in days, not weeks
 - Production-quality code with proper accessibility
 - Consistent design system across all components
 - Seamless Vercel deployment pipeline
 
 ---
 
-*Developed by [Kiro](https://kiro.dev) — AI-powered development environment.*
+*Developed by [Kiro](https://kiro.dev)  AI-powered development environment.*
 
 ### Team
 
