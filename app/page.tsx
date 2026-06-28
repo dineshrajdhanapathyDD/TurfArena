@@ -27,7 +27,7 @@ export default function SplashPage() {
           transition={{ type: 'spring', stiffness: 220, damping: 16 }}
           className="w-20 h-20 rounded-2xl flex items-center justify-center mb-4 shadow-lg overflow-hidden"
         >
-          <Image src="/images/turfarena-logo.png" alt="TurfArena" width={80} height={80} className="w-full h-full object-cover" />
+          <Image src="/images/Turfarena-logo.png" alt="TurfArena" width={80} height={80} className="w-full h-full object-contain" />
         </motion.div>
 
         <motion.p
